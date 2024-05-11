@@ -1,0 +1,23 @@
+.landing-page {
+    height: 100vh; /* Make the landing page full height */
+    background-color: #f0f0f0; /* Grey background */
+    display: flex; /* Use flexbox to position the content */
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Align to the top */
+    padding-top: 30vh; /* Move the content down by 30% of the viewport height */
+}
+
+.content-container {
+    display: flex; /* Use flexbox to position the text and form side by side */
+    align-items: center; /* Center vertically */
+}
+
+.text-container {
+    margin-right: 20px; /* Add some space between the text and the form */
+}
+
+.login-form {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a shadow to the form */
+    padding: 20px; /* Add some padding to the form */
+    border-radius: 10px; /* Round the corners of the form */
+}

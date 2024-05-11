@@ -1,0 +1,42 @@
+@import 'variables';
+
+
+.header {
+    background-color: $main-color;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $main-color;
+}
+
+.header__menu-item {
+    margin-right: 2rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: #666;
+    }
+
+    &--active {
+        color: var(--main-color);
+        font-weight: bold;
+    }
+
+    color: mix(#fff, $main-color, 80%); // Inactive menu item text color (white with a tint of blue)
+
+    &.current {
+        background-color: lighten($main-color, 20%); // Lighter blue background for active menu item
+        color: #fff; // Active menu item text color (completely white)
+        border-radius: 10px;
+        padding: 5px 10px;
+    }
+}
