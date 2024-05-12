@@ -6,6 +6,8 @@ import LoginFormFields from './LoginFormFields';
 import SignupFormFields from './SignupFormFields';
 import PasswordValidator from '../helpers/PasswordValidator';
 import UserService from "../services/UserService";
+import TeacherSignupFormFields from "./TeacherSignupFormFields";
+import ParentSignupFormFields from "./ParentSignupFormFields";
 
 const userService = new UserService();
 
@@ -44,8 +46,24 @@ function LoginForm(props: LoginFormProps) {
         <div>
             <div className="form-container login-form">
                 <LoginFormFields onSubmit={handleLoginSubmit} onSignupClick={openModal} isTeacher={props.isTeacher} />
-                <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal" className="signup-modal">
-                    <SignupFormFields onSubmit={handleSignupSubmit} error={error} />
+                <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal" className="signup-modal" overlayClassName="signup-modal-overlay" style={{
+                    overlay: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)', // change the background color to be less transparent
+                    },
+                    content: {
+                        top: '50%', // move the modal down to the middle of the screen
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '-50%',
+                        transform: 'translate(-50%, -50%)',
+                    },
+                }}>
+                    {props.isTeacher ? (
+                        <TeacherSignupFormFields onSubmit={handleSignupSubmit} error={error} />
+                    ) : (
+                        <ParentSignupFormFields onSubmit={handleSignupSubmit} error={error} />
+                    )}
                 </Modal>
             </div>
             {!props.isTeacher && <p>Are you a teacher? <span className="teacher-link" onClick={props.onTeacherClick}>Click Here</span></p>}
