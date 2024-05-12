@@ -1,13 +1,39 @@
 @import 'variables';
 
+.header__banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: $main-color;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    height: 120px; /* Add this line */
+    display: flex; /* Add this line */
+    align-items: center; /* Add this line */
+}
 
 .header {
     background-color: $main-color;
     padding: 1rem;
     border-bottom: 1px solid #ddd;
-    display: flex;
+    display: flex; /* Add this line */
     justify-content: space-between;
     align-items: center;
+    height: 65px; /* Add this line */
+}
+
+.header__logo {
+    width: auto; /* Change this line */
+    margin-right: 20px; /* Add this line */
+}
+
+.header__logo img {
+    max-height: 100%; /* Add this line */
+    max-width: 100%; /* Add this line */
+    height: 125px; /* Add this line */
+    width: auto; /* Add this line */
 }
 
 .header__menu {

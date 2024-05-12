@@ -21,7 +21,7 @@ function App() {
 function LayoutWithHeader() {
     return (
         <>
-            <Header />
+            <Header isLoggedIn={true}/>
             <Routes>
                 <Route path="/home" element={<Home />} />
                 <Route path="/resources" element={<Resources />} />

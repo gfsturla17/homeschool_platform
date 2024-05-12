@@ -3,24 +3,12 @@ import { Pool } from 'pg';
 class Database {
     private pool: Pool;
 
-    constructor() {
-        this.pool = new Pool({
-            user: 'postgres',
-            host: 'localhost',
-            database: 'postgres',
-            password: '12345',
-            port: 5432,
-        });
+    constructor(pool: Pool) {
+        this.pool = pool;
     }
 
-    async query(query: string, params?: any[]): Promise<any> {
-        try {
-            const result = await this.pool.query(query, params);
-            return result.rows;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+    async query(query: string, params: any[] = []): Promise<any> {
+        return this.pool.query(query, params);
     }
 
     async close(): Promise<void> {

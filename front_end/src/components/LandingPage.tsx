@@ -2,9 +2,11 @@ import './LandingPage.scss';
 import './LoginSheet.scss';
 import React, { useState } from 'react';
 import LoginForm from './LoginForm';
+import Header from './Header';
 
 function LandingPage() {
     const [isTeacher, setIsTeacher] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleTeacherClick = () => {
         setIsTeacher(true);
@@ -16,8 +18,9 @@ function LandingPage() {
 
     return (
         <div className="landing-page">
+            <Header isLoggedIn={isLoggedIn} />
             <div className="content-container">
-                <div className="text-container">
+                <div className="text-container fixed-width">
                     {!isTeacher && (
                         <>
                             <h1>Discover Your Homeschooling Partner!</h1>

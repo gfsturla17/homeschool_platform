@@ -38,3 +38,37 @@
   cursor: pointer;
   width: 100%;
 }
+
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.9); /* Make the overlay more faded */
+}
+
+.ReactModal__Content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: auto;
+  display: inline-block; /* Add this style */
+}
+
+.signup-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 15px; /* Update the padding style */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.ReactModal__Overlay--after-open{
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+  opacity: 0;
+}
+
+
