@@ -10,6 +10,9 @@ import UserService from "../services/UserService";
 const userService = new UserService();
 
 interface LoginFormProps {
+    isTeacher: boolean;
+    onTeacherClick: () => void;
+    onParentClick: () => void;
 }
 
 function LoginForm(props: LoginFormProps) {
@@ -40,12 +43,13 @@ function LoginForm(props: LoginFormProps) {
     return (
         <div>
             <div className="form-container login-form">
-                <LoginFormFields onSubmit={handleLoginSubmit} onSignupClick={openModal} />
+                <LoginFormFields onSubmit={handleLoginSubmit} onSignupClick={openModal} isTeacher={props.isTeacher} />
                 <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal" className="signup-modal">
                     <SignupFormFields onSubmit={handleSignupSubmit} error={error} />
                 </Modal>
             </div>
-            <p>Are you a teacher? <span className="teacher-link">Click Here</span></p>
+            {!props.isTeacher && <p>Are you a teacher? <span className="teacher-link" onClick={props.onTeacherClick}>Click Here</span></p>}
+            {props.isTeacher && <p>Are you a parent? <span className="parent-link" onClick={props.onParentClick}>Click Here</span></p>}
         </div>
     );
 }

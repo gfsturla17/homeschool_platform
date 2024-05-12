@@ -1,9 +1,9 @@
-// components/LoginFormFields.tsx
 import React, { useState } from 'react';
 
 interface LoginFormFieldsProps {
     onSubmit: (event: any) => void;
     onSignupClick: () => void;
+    isTeacher: boolean;
 }
 
 function LoginFormFields(props: LoginFormFieldsProps) {
@@ -21,11 +21,11 @@ function LoginFormFields(props: LoginFormFieldsProps) {
 
     return (
         <form onSubmit={handleSubmit} className="form">
-            <input type="text" value={username} onChange={(event: any) => setUsername(event.target.value)} placeholder="Username" className="form-input" />
+            <input type="text" value={username} onChange={(event: any) => setUsername(event.target.value)} placeholder={props.isTeacher ? "Teacher's Username" : "Username"} className="form-input" />
             <div className="password-input-container">
-                <input type="password" value={password} onChange={(event: any) => setPassword(event.target.value)} placeholder="Password" className="form-input" />
+                <input type="password" value={password} onChange={(event: any) => setPassword(event.target.value)} placeholder={props.isTeacher ? "Teacher's Password" : "Password"} className="form-input" />
             </div>
-            <button type="submit" className="submit-button">Log in</button>
+            <button type="submit" className="submit-button">{props.isTeacher ? "Log in as Teacher" : "Log in"}</button>
             <p className="forgot-password-text">Forgot password</p>
             <button type="button" className="toggle-signup-button" onClick={props.onSignupClick}>Sign up</button>
         </form>

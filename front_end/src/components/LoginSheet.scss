@@ -1,0 +1,40 @@
+.login-form {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.teacher-link, .parent-link {
+  cursor: pointer;
+}
+
+.teacher-link:hover, .parent-link:hover {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.forgot-password-text {
+  color: #87CEEB;
+  margin-bottom: 10px;
+}
+
+.toggle-signup-button {
+  background-color: #0070e0;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
