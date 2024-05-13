@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
-import Database from "../src/service/database";
-import TeacherService from "../src/service/teacher-service";
+import Database from "../../src/service/database";
+import TeacherService from "../../src/service/teacher-service";
 
 const pool = new Pool({
     user: 'postgres',

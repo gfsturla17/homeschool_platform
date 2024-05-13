@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
-const database_1 = __importDefault(require("../src/service/database"));
-const teacher_service_1 = __importDefault(require("../src/service/teacher-service"));
+const database_1 = __importDefault(require("../../src/service/database"));
+const teacher_service_1 = __importDefault(require("../../src/service/teacher-service"));
 const pool = new pg_1.Pool({
     user: 'postgres',
     host: 'localhost',
