@@ -7,6 +7,7 @@ import logger from 'morgan';
 
 import indexRouter from './routes';
 import usersRouter from './routes/users';
+import teachersRouter from './routes/teachers';
 
 const app = express();
 
@@ -16,13 +17,14 @@ app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: 'http://127.0.0.1:3001' }));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', usersRouter);
+app.use('/teachers', teachersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req: Request, res: Response, next: NextFunction) {
