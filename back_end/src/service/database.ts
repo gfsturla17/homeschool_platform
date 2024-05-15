@@ -1,19 +1,18 @@
-import { Pool } from 'pg';
+import { createConnection } from "typeorm";
 
-class Database {
-    private pool: Pool;
+createConnection({
+    type: "postgres",
+    host: "localhost",
+    port: 5432,
+    username: "postgres",
+    password: "12345",
+    database: "postgres",
+    entities: [
+        "./src/entity/**/*.ts"
+    ],
+    synchronize: true,
+    logging: false
+}).then(connection => {
+    // Here you can start to work with your entities
+}).catch(error => console.log(error));
 
-    constructor(pool: Pool) {
-        this.pool = pool;
-    }
-
-    async query(query: string, params: any[] = []): Promise<any> {
-        return this.pool.query(query, params);
-    }
-
-    async close(): Promise<void> {
-        await this.pool.end();
-    }
-}
-
-export default Database;

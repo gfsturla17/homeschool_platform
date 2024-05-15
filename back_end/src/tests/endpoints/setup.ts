@@ -1,4 +1,4 @@
-import app from '../../src/app'; // Adjust the path to your Express app
+import app from "../../app";
 
 let server: any;
 

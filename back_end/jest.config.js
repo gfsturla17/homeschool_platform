@@ -8,5 +8,8 @@ module.exports = {
             tsconfig: 'tsconfig.json'
         }
     },
-    setupFilesAfterEnv: ['./jest.setup.js']
+    setupFilesAfterEnv: ['./jest.setup.js'],
+    moduleNameMapper: {
+        '^@src/(.*)$': '<rootDir>/src/$1'
+    }
 };

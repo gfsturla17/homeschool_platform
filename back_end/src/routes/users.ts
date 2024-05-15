@@ -1,5 +1,4 @@
 import express, { Request, Response, Router } from 'express';
-import Database from "../service/database";
 import UserService from "../service/userService";
 import {Pool} from "pg";
 const router: Router = express.Router();
@@ -9,9 +8,8 @@ router.get('/register', (req: Request, res: Response, next: any) => {
   res.render('index', { title: 'Express' });
 });
 
-const db = new Database(new Pool());
 
-const userService = new UserService(db);
+const userService = new UserService();
 
 router.post('/register', async (req, res) => {
   const userRegistration = req.body;

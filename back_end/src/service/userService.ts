@@ -1,4 +1,3 @@
-import Database from "./database";
 import { QueryResult } from 'pg';
 
 interface UserRegistration {
@@ -9,15 +8,9 @@ interface UserRegistration {
 }
 
 class UserService {
-    private db: Database;
-
-    constructor(db: Database) {
-        this.db = db;
-    }
-
     async registerUser(userRegistration: UserRegistration): Promise<void> {
         try {
-            await this.db.query(`INSERT INTO users_login (username, email, password, birthdate) VALUES ($1, $2, $3, $4)`, [userRegistration.username, userRegistration.email, userRegistration.password, userRegistration.birthdate]);
+            // await this.db.query(`INSERT INTO users_login (username, email, password, birthdate) VALUES ($1, $2, $3, $4)`, [userRegistration.username, userRegistration.email, userRegistration.password, userRegistration.birthdate]);
         } catch (error: any) {
             if (error.code === '23505') {
                 if (error.constraint === 'users_login_pkey') {

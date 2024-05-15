@@ -1,8 +1,9 @@
 import express, { Request, Response, Router } from 'express';
-import Database from "../service/database";
-import UserService from "../service/userService";
-import {Pool} from "pg";
-import multer from 'multer';
+import FileUploadDTO from '../dto/FileUploadDTO'
+import multer from "multer";
+import {TeacherSignUpDTO} from "../dto/TeacherSignUpDTO";
+import cors from "cors";
+import TeacherService from "../service/teacher-service";
 const router: Router = express.Router();
 
 // Set up storage options for multer
@@ -33,10 +34,33 @@ router.post('/upload', upload.single('file'), (req: Request, res: Response) => {
   });
 });
 
+const teacherService = new TeacherService();
+router.post('/signup', cors(), (req, res) => {
+  const { firstName, lastName, email, phoneNumber, address, city, state, zipCode, password, confirmPassword } = req.body;
+  const teacherSignUpDTO = new TeacherSignUpDTO(firstName, lastName, email, phoneNumber, address, city, state, zipCode, password, confirmPassword);
+  teacherService.register(teacherSignUpDTO);
+  res.json({
+    message: 'Teacher sign up request received',
+    userData: {
+      firstName,
+      lastName
+    }
+  });
+});
 
 
-router.get('/info', (req: Request, res: Response, next: any) => {
-  res.render('index', { title: 'Express' });
+router.get('/lesson-plans', (req, res) => {
+  const lessonPlans = ['Lesson Plan 1', 'Lesson Plan 2', 'Lesson Plan 3'];
+  res.json({ lessonPlans });
+});
+
+// POST endpoint for adding new lesson plans
+router.post('/lesson-plans', (req, res) => {
+  const fileUploadDTO: FileUploadDTO = req.body;
+  console.log({ lessonPlan: fileUploadDTO });
+  console.log(req.body);
+
+  res.json({ lessonPlan: fileUploadDTO.lessonPlan });
 });
 
 

@@ -2,16 +2,18 @@ import React from 'react';
 import { useState } from 'react';
 import './ResourcesSheet.scss'
 import expandArrowDown from '../icons/expand-arrow-down.png';
+import FileUpload from './FileUpload'; // Import the FileUpload component
 
 interface Props {
     // Add props if needed
 }
 
-
 const Resources: React.FC<Props> = () => {
 
     const [selectedCategory, setSelectedCategory] = useState('Educational Materials');
     const [expandedMenu, setExpandedMenu] = useState<string | null>('Educational Materials');
+    const [showFileUpload, setShowFileUpload] = useState(false); // New state variable to track whether to show the FileUpload component
+    const [selectedSubcategory, setSelectedSubcategory] = useState('');
 
     const handleCategoryChange = (category: string) => {
         setSelectedCategory(category);
@@ -20,6 +22,18 @@ const Resources: React.FC<Props> = () => {
         } else {
             setExpandedMenu(category);
         }
+        setShowFileUpload(false); // Hide the FileUpload component when a new category is selected
+    };
+
+    const handleSubcategoryChange = (e: React.MouseEvent<HTMLLIElement>, subcategory: string) => {
+        e.stopPropagation(); // Prevent the event from propagating to the parent element
+        setSelectedSubcategory(subcategory);
+        setShowFileUpload(false); // Hide the FileUpload component when a subcategory is clicked
+    };
+
+    const handleVideoTutorialClick = (e: React.MouseEvent<HTMLLIElement>) => {
+        e.stopPropagation(); // Prevent the event from propagating to the parent element
+        setShowFileUpload(true);
     };
 
     return (
@@ -34,10 +48,10 @@ const Resources: React.FC<Props> = () => {
                         Educational Materials
                         {expandedMenu === 'Educational Materials' && (
                             <ul>
-                                <li>E-books</li>
-                                <li>Worksheets</li>
-                                <li>Interactive games</li>
-                                <li>Video Tutorials</li>
+                                <li onClick={(e) => handleSubcategoryChange(e, 'E-books')}>E-books</li>
+                                <li onClick={(e) => handleSubcategoryChange(e, 'Worksheets')}>Worksheets</li>
+                                <li onClick={(e) => handleSubcategoryChange(e, 'Interactive games')}>Interactive games</li>
+                                <li onClick={handleVideoTutorialClick}>Video Tutorials</li>
                             </ul>
                         )}
                     </li>
@@ -46,10 +60,10 @@ const Resources: React.FC<Props> = () => {
                         Local Events and Activities
                         {expandedMenu === 'Local Events and Activities' && (
                             <ul>
-                                <li>Calendar</li>
-                                <li>Workshops</li>
-                                <li>Meetups</li>
-                                <li>Co-op Classes</li>
+                                <li onClick={(e) => handleSubcategoryChange(e, 'Calendar')}>Calendar</li>
+                                <li onClick={(e) => handleSubcategoryChange(e, 'Workshops')}>Workshops</li>
+                                <li onClick={(e) => handleSubcategoryChange(e, 'Meetups')}>Meetups</li>
+                                <li onClick={(e) => handleSubcategoryChange(e, 'Co-op Classes')}>Co-op Classes</li>
                             </ul>
                         )}
                     </li>
@@ -65,27 +79,12 @@ const Resources: React.FC<Props> = () => {
             </div>
 
             <div className="content">
-                {selectedCategory === 'Educational Materials' && (
+                {showFileUpload ? (
+                    <FileUpload />
+                ) : (
                     <div>
-                        {/* Add your Educational Materials content here */}
-                    </div>
-                )}
-
-                {selectedCategory === 'Local Events and Activities' && (
-                    <div>
-                        {/* Add your Local Events and Activities content here */}
-                    </div>
-                )}
-
-                {selectedCategory === 'Community Forms' && (
-                    <div>
-                        {/* Add your Community Forms content here */}
-                    </div>
-                )}
-
-                {selectedCategory === 'Expert Directory' && (
-                    <div>
-                        {/* Add your Expert Directory content here */}
+                        <h2>{selectedCategory}</h2>
+                        <p>{selectedSubcategory}</p>
                     </div>
                 )}
             </div>

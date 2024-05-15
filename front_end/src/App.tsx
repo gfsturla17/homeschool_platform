@@ -5,6 +5,8 @@ import CompleteProfileForm from './components/CompleteProfileForm';
 import Resources from "./components/Resources";
 import Home from "./components/Home";
 import Header from "./components/Header";
+import FileUpload from "./components/FileUpload";
+import TeacherResources from "./components/TeacherResources";
 
 function App() {
     return (
@@ -25,6 +27,8 @@ function LayoutWithHeader() {
             <Routes>
                 <Route path="/home" element={<Home />} />
                 <Route path="/resources" element={<Resources />} />
+                <Route path="/teacher/resources" element={<TeacherResources />} />
+                <Route path="/uploads" element={<FileUpload />} />
             </Routes>
         </>
     );

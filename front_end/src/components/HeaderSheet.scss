@@ -21,7 +21,7 @@
     display: flex; /* Add this line */
     justify-content: space-between;
     align-items: center;
-    height: 65px; /* Add this line */
+    height: 120px; /* Add this line */
 }
 
 .header__logo {
@@ -40,6 +40,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 120px; /* Add this line */
     background-color: $main-color;
 }
 
