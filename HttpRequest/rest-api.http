@@ -1,0 +1,22 @@
+### Create a new teacher
+POST http://localhost:3000/teachers
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john-doe@example.com",
+  "address": "123 Main St",
+  "city": "Anytown",
+  "state": "Anystate",
+  "yearsOfExperience": 5,
+  "password": "12345"
+}
+### Get a teacher's profile by ID
+GET http://localhost:3000/teachers/14/profile
+
+### Delete a teacher by email
+DELETE http://localhost:3000/teachers/john-doe@example.com
+
+
+
