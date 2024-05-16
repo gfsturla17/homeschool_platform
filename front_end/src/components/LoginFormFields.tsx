@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import axios from "axios";
+import { login } from "../store/authSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
 
 interface LoginFormFieldsProps {
     onSubmit: (event: any) => void;
@@ -9,15 +14,16 @@ interface LoginFormFieldsProps {
 function LoginFormFields(props: LoginFormFieldsProps) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
-    const handleSubmit = (event: any) => {
-        event.preventDefault();
-        if (!username || !password) {
-            // setError('Please fill in all fields.'); // You need to pass setError as a prop or create a local state for error
-            return;
-        }
-        props.onSubmit(event);
-    };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const credentials = { email: username, password };
+    dispatch(login(credentials)).unwrap().then(() => {
+      navigate('/resources'); // or any other route you want to navigate to
+    });
+  };
 
     return (
         <form onSubmit={handleSubmit} className="form">

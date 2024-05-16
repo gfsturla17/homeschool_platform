@@ -66,7 +66,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
                   {props.isTeacher ? (
                     <TeacherSignupFormFields />
                   ) : (
-                    <ParentSignupFormFields onSubmit={handleSignupSubmit} error={auth.error || ''} />
+                    <ParentSignupFormFields onSubmit={handleSignupSubmit} error={''} />
                   )}
               </Modal>
           </div>
