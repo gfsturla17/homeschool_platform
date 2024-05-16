@@ -7,31 +7,21 @@ import Home from "./components/Home";
 import Header from "./components/Header";
 import FileUpload from "./components/FileUpload";
 import TeacherResources from "./components/TeacherResources";
+import { RootState } from "./store/store";
+import { useSelector } from "react-redux";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/complete-profile" element={<CompleteProfileForm />} />
-                <Route path="*" element={<LayoutWithHeader />} />
-            </Routes>
-        </BrowserRouter>
-    );
-}
-
-function LayoutWithHeader() {
-    return (
-        <>
-            <Header isLoggedIn={true}/>
-            <Routes>
-                <Route path="/home" element={<Home />} />
-                <Route path="/resources" element={<Resources />} />
-                <Route path="/teacher/resources" element={<TeacherResources />} />
-                <Route path="/uploads" element={<FileUpload />} />
-            </Routes>
-        </>
-    );
+  return (
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/complete-profile" element={<CompleteProfileForm />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/resources" element={<Resources />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

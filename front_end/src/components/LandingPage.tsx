@@ -18,7 +18,7 @@ function LandingPage() {
 
     return (
         <div className="landing-page">
-            <Header isLoggedIn={isLoggedIn} />
+            <Header/>
             <div className="content-container">
                 <div className="text-container fixed-width">
                     {!isTeacher && (

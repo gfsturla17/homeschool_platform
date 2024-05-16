@@ -1,5 +1,6 @@
 // src/store/authSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -13,24 +14,41 @@ const initialState: AuthState = {
   error: null,
 };
 
+export const login = createAsyncThunk(
+  'auth/login',
+  async (credentials: { username: string, password: string }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('/api/login', credentials);
+      return response.data.user;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loginSuccess(state, action: PayloadAction<string>) {
-      state.isLoggedIn = true;
-      state.user = action.payload;
-    },
-    loginFailure(state, action: PayloadAction<string>) {
-      state.isLoggedIn = false;
-      state.error = action.payload;
-    },
     logout(state) {
       state.isLoggedIn = false;
       state.user = null;
+      state.error = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(login.fulfilled, (state, action: PayloadAction<string>) => {
+      state.isLoggedIn = true;
+      state.user = action.payload;
+      state.error = null;
+    });
+    builder.addCase(login.rejected, (state, action: PayloadAction<any>) => {
+      state.isLoggedIn = false;
+      state.user = null;
+      state.error = action.payload;
+    });
   },
 });
 
-export const { loginSuccess, loginFailure, logout } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

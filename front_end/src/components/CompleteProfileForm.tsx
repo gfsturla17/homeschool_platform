@@ -1,100 +1,60 @@
 import React, { useState } from 'react';
-import UserService from '../services/UserService';
-import './StyleSheet.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { getTeacherProfile } from '../store/teacherSlice';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-
-const userService = new UserService();
-
-function CompleteProfileForm() {
+const CompleteProfileForm: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const teacherId = useSelector((state: RootState) => state.teacher.id);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [numberOfKids, setNumberOfKids] = useState('');
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
-    const [zipCode, setZipCode] = useState('');
-    const [error, setError] = useState('');
+    const [biography, setBiography] = useState('');
+    const [profilePictureUrl, setProfilePictureUrl] = useState('');
+    const [socialMediaLinks, setSocialMediaLinks] = useState('');
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        if (!firstName || !lastName || !numberOfKids || !address || !city || !state || !zipCode) {
-            setError('Please fill in all fields.');
-            return;
-        }
-        const profileCompletion = {
+        const updateTeacherProfileRequestDTO = {
             firstName,
             lastName,
-            numberOfKids,
             address,
             city,
             state,
-            zipCode,
+            biography,
+            profilePictureUrl,
+            socialMediaLinks,
         };
-        userService.completeProfile(profileCompletion).catch((error) => {
-            setError(error.message);
-        });
+
+        axios.put(`http://127.0.0.1:3000/teachers/${teacherId}/profile`, updateTeacherProfileRequestDTO)
+          .then((response) => {
+              if (response.status === 200) {
+                  toast.success('Profile updated successfully!');
+              }
+          })
+          .catch((error) => {
+              toast.error('Error updating profile!');
+          });
     };
 
-
     return (
-        <div className="form-container">
-            <h2>Complete Profile</h2>
-            <form onSubmit={handleSubmit} className="form">
-                <h3>Basic Info</h3>
-                <div className="name-inputs">
-                    <input
-                        type="text"
-                        value={firstName}
-                        onChange={(event: any) => setFirstName(event.target.value)}
-                        placeholder="First Name"
-                        className="form-input"
-                    />
-                    <input
-                        type="text"
-                        value={lastName}
-                        onChange={(event: any) => setLastName(event.target.value)}
-                        placeholder="Last Name"
-                        className="form-input"
-                    />
-                </div>
-                <h3>Address</h3>
-                <div className="address-inputs">
-                    <input
-                        type="text"
-                        value={address}
-                        onChange={(event: any) => setAddress(event.target.value)}
-                        placeholder="Address"
-                        className="form-input"
-                    />
-                    <input
-                        type="text"
-                        value={zipCode}
-                        onChange={(event: any) => setZipCode(event.target.value)}
-                        placeholder="Zip Code"
-                        className="form-input"
-                    />
-                </div>
-                <div className="city-state-inputs">
-                    <input
-                        type="text"
-                        value={city}
-                        onChange={(event: any) => setCity(event.target.value)}
-                        placeholder="City"
-                        className="form-input"
-                    />
-                    <input
-                        type="text"
-                        value={state}
-                        onChange={(event: any) => setState(event.target.value)}
-                        placeholder="State"
-                        className="form-input"
-                    />
-                </div>
-                {error && <p className="error-message">{error}</p>}
-                <button type="submit" className="submit-button">Complete Profile</button>
-            </form>
-        </div>
+      <form onSubmit={handleSubmit} className="form">
+          <h2>Complete Your Profile</h2>
+          <input type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} placeholder="First Name" className="form-input" />
+          <input type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} placeholder="Last Name" className="form-input" />
+          <input type="text" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Address" className="form-input" />
+          <input type="text" value={city} onChange={(event) => setCity(event.target.value)} placeholder="City" className="form-input" />
+          <input type="text" value={state} onChange={(event) => setState(event.target.value)} placeholder="State" className="form-input" />
+          <textarea value={biography} onChange={(event) => setBiography(event.target.value)} placeholder="Biography" className="form-textarea" />
+          <input type="text" value={profilePictureUrl} onChange={(event) => setProfilePictureUrl(event.target.value)} placeholder="Profile Picture URL" className="form-input" />
+          <input type="text" value={socialMediaLinks} onChange={(event) => setSocialMediaLinks(event.target.value)} placeholder="Social Media Links" className="form-input" />
+          <button type="submit" className="submit-button">Update Profile</button>
+      </form>
     );
-}
+};
 
 export default CompleteProfileForm;
