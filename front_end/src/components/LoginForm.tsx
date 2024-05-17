@@ -1,15 +1,81 @@
-// src/components/LoginForm.tsx
 import React, { useState } from 'react';
-import './StyleSheet.scss';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import LoginFormFields from './LoginFormFields';
 import TeacherSignupFormFields from './TeacherSignupFormFields';
 import ParentSignupFormFields from './ParentSignupFormFields';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../store/authSlice';
 import { RootState, AppDispatch } from '../store/store';
 import { registerTeacher } from "../store/teacherSlice";
+import styled from 'styled-components';
+
+const FormContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const LoginWrapper = styled.div`
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+`;
+
+const Link = styled.span`
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+        font-weight: bold;
+    }
+`;
+
+const SignupModal = styled(Modal)`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px; /* adjust the width to your liking */
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+    .teacher-link, .parent-link {
+        cursor: pointer;
+    }
+
+    .teacher-link:hover, .parent-link:hover {
+        text-decoration: underline;
+        font-weight: bold;
+    }
+
+    .submit-button {
+        background-color: #28a745;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .forgot-password-text {
+        color: #87CEEB;
+        margin-bottom: 10px;
+    }
+
+    .toggle-signup-button {
+        background-color: #0070e0;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+    }
+`;
 
 interface LoginFormProps {
     isTeacher: boolean;
@@ -19,10 +85,9 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = (props) => {
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const auth = useSelector((state: RootState) => state.auth);
-    const teacher = useSelector((state: RootState) => state.teacher);
 
     const openModal = () => {
         setIsOpen(true);
@@ -34,44 +99,35 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
     const handleLoginSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-
+        // Add login logic here
     };
 
     const handleSignupSubmit = async (userRegistration: any) => {
         try {
             await dispatch(registerTeacher(userRegistration)).unwrap();
             navigate('/complete-profile');
+            closeModal();
         } catch (error) {
-            console.error(error);
+            setError('Signup failed. Please try again.');
         }
     };
 
     return (
       <div>
-          <div className="form-container login-form">
-              <LoginFormFields onSubmit={handleLoginSubmit} onSignupClick={openModal} isTeacher={props.isTeacher} />
-              <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Example Modal" className="signup-modal" overlayClassName="signup-modal-overlay" style={{
-                  overlay: {
-                      backgroundColor: 'rgba(0, 0, 0, 0.7)', // change the background color to be less transparent
-                  },
-                  content: {
-                      top: '50%', // move the modal down to the middle of the screen
-                      left: '50%',
-                      right: 'auto',
-                      bottom: 'auto',
-                      marginRight: '-50%',
-                      transform: 'translate(-50%, -50%)',
-                  },
-              }}>
+          <FormContainer>
+              <LoginWrapper>
+                  <LoginFormFields onSubmit={handleLoginSubmit} onSignupClick={openModal} isTeacher={props.isTeacher} />
+              </LoginWrapper>
+              <SignupModal isOpen={modalIsOpen} onRequestClose={closeModal}>
                   {props.isTeacher ? (
                     <TeacherSignupFormFields />
                   ) : (
                     <ParentSignupFormFields onSubmit={handleSignupSubmit} error={''} />
                   )}
-              </Modal>
-          </div>
-          {!props.isTeacher && <p>Are you a teacher? <span className="teacher-link" onClick={props.onTeacherClick}>Click Here</span></p>}
-          {props.isTeacher && <p>Are you a parent? <span className="parent-link" onClick={props.onParentClick}>Click Here</span></p>}
+              </SignupModal>
+          </FormContainer>
+          {!props.isTeacher && <p>Are you a teacher? <Link onClick={props.onTeacherClick}>Click Here</Link></p>}
+          {props.isTeacher && <p>Are you a parent? <Link onClick={props.onParentClick}>Click Here</Link></p>}
       </div>
     );
 };

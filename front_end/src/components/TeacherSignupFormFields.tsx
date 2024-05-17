@@ -1,9 +1,41 @@
+// TeacherSignupFormFields
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { registerTeacher } from '../store/teacherSlice';
 import { RegisterTeacherDTO } from "shared-nextdoor-education";
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+`;
+
+const Input = styled.input`
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+`;
+
+const ErrorMessage = styled.p`
+    color: red;
+    white-space: pre-wrap;
+`;
+
+const SubmitButton = styled.button`
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+`;
 
 const TeacherSignupFormFields: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,14 +59,14 @@ const TeacherSignupFormFields: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form">
+    <Form onSubmit={handleSubmit}>
       <h2>Teacher Sign Up</h2>
-      <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Email Address" className="form-input" />
-      <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" className="form-input" />
-      <input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="Confirm Password" className="form-input" />
-      {teacher.error && <p className="error-message">{teacher.error}</p>}
-      <button type="submit" className="submit-button">Sign up</button>
-    </form>
+      <Input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Email Address" />
+      <Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" />
+      <Input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} placeholder="Confirm Password" />
+      {teacher.error && <ErrorMessage>{teacher.error}</ErrorMessage>}
+      <SubmitButton type="submit">Sign up</SubmitButton>
+    </Form>
   );
 };
 

@@ -9,9 +9,11 @@ import Resources from "./components/Resources";
 import Home from "./components/Home";
 import Header from "./components/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Modal from "react-modal";
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
+  Modal.setAppElement('#root');
 
   return (
     <ThemeProvider theme={theme}>

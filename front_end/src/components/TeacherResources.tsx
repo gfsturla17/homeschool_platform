@@ -4,9 +4,7 @@ import './TeacherResourcesSheet.scss'
 import expandArrowDown from '../icons/expand-arrow-down.png';
 import FileUpload from './FileUpload'; // Import the FileUpload component
 
-interface Props {
-    // Add props if needed
-}
+interface Props {}
 
 const TeacherResources: React.FC<Props> = () => {
 
