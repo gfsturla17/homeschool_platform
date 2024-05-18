@@ -1,17 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = {
-  token: localStorage.getItem('token')
-};
-
 interface AuthState {
   token: string | null;
 }
 
-interface RootState {
-  auth: AuthState;
-}
+const initialState: AuthState = {
+  token: localStorage.getItem('token')
+};
 
 export const login = createAsyncThunk(
   'auth/login',
@@ -43,16 +39,5 @@ const authSlice = createSlice({
     });
   },
 });
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'LOGIN':
-      return { ...state, token: action.payload };
-    case 'LOGOUT':
-      return { ...state, token: null };
-    default:
-      return state;
-  }
-};
 
 export default authSlice.reducer;

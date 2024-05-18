@@ -79,7 +79,6 @@ const RightMenu = styled.div`
 
 const HamburgerButton = styled.button<{ isActive?: boolean }>`
     background-color: transparent;
-    border: none;
     cursor: pointer;
     padding: 5px 10px; /* Added padding to match MenuItem */
     margin-left: 20px;
