@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from '../icons/logo_1.png';
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
 import styled from 'styled-components';
 import { lightTheme } from "../styles/theme";
+import { logout } from "../store/authSlice";
 
 const primaryColor = lightTheme.colors.primary;
 const hoverColor = "#87CEEB"; // Defined hover color
@@ -16,35 +17,21 @@ const HeaderWrapper = styled.div<{ isLoggedIn: boolean }>`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100px;
+    height: 60px;
 `;
 
-const Logo = styled.div`
-    width: auto;
-    margin-right: 20px;
-`;
-
-const LogoImg = styled.img`
-    max-height: 100%;
-    max-width: 100%;
-    height: 125px;
-    width: auto;
-`;
-
-const Menu = styled.div`
+const LeftMenu = styled.div`
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    height: 100px;
 `;
 
 const MenuItem = styled(NavLink)<{ isActive?: boolean }>`
     margin-right: 2rem;
     text-decoration: none;
     color: #fff;
-    padding: 10px 20px;
+    padding: 5px 10px;
     border-radius: 50px;
-    width: 100px; /* Fixed width */
+    width: 100px; /* Fix width */
     text-align: center; /* Center text */
     display: flex;
     justify-content: center;
@@ -52,7 +39,7 @@ const MenuItem = styled(NavLink)<{ isActive?: boolean }>`
     transition: background-color 0.2s ease, font-weight 0.2s ease, border 0.2s ease;
     border: 2px solid transparent; /* Initial border */
 
-    &:hover {
+    &:hover:not([to="/home"]) {
         background-color: ${hoverColor};
         font-weight: bold; /* Bold on hover */
     }
@@ -64,16 +51,37 @@ const MenuItem = styled(NavLink)<{ isActive?: boolean }>`
   `}
 `;
 
+const HomeButton = styled(NavLink)`
+    margin-right: 2rem;
+    text-decoration: none;
+
+    &:hover {
+        & img {
+            border: 2px solid ${hoverColor};
+        }
+    }
+`;
+
+const LogoImg = styled.img`
+    max-height: 100%;
+    max-width: 100%;
+    height: 55px; /* Adjust the height to maintain the original aspect ratio */
+    width: auto;
+    border-radius: 5px;
+
+`;
+
 const RightMenu = styled.div`
     display: flex;
     align-items: center;
+    position: relative;
 `;
 
 const HamburgerButton = styled.button<{ isActive?: boolean }>`
     background-color: transparent;
     border: none;
     cursor: pointer;
-    padding: 10px 20px; /* Added padding to match MenuItem */
+    padding: 5px 10px; /* Added padding to match MenuItem */
     margin-left: 20px;
     color: #fff;
     font-size: 16px;
@@ -101,18 +109,20 @@ const HamburgerButton = styled.button<{ isActive?: boolean }>`
 
 const DropdownMenu = styled.ul<{ isOpen: boolean }>`
     position: absolute;
-    top: 50px;
+    top: calc(100% - 5px);
     right: 0;
-    background-color: ${primaryColor};
+    background-color: #fff; /* White background */
     padding: 10px;
     list-style: none;
     display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    border-radius: 10px; /* Add some border radius */
+    box-shadow: 0 0 10px rgba(0,0,0,0.2); /* Add some box shadow */
 `;
 
 const DropdownItem = styled.li`
     margin-bottom: 10px;
     cursor: pointer;
-    color: ${lightTheme.colors.secondary};
+    color: ${primaryColor}; /* Use primary color for text */
 
     &:hover {
         color: #666;
@@ -120,30 +130,42 @@ const DropdownItem = styled.li`
 `;
 
 const Header = () => {
-  const isLoggedIn = useSelector((state: RootState) => state.auth.token);
+  const token = useSelector((state: RootState) => state.auth.token);
+  const isLoggedIn = !!token; // or token !== null && token !== ''
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/');
+    }
+  }, [token, navigate]);
 
   const handleHamburgerClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <HeaderWrapper isLoggedIn={isLoggedIn}>
-      <Logo>
-        <LogoImg src={logo} alt="Logo" />
-      </Logo>
+      <LeftMenu>
+        <HomeButton to="/home">
+          <LogoImg src={logo} alt="Logo" />
+        </HomeButton>
+        <MenuItem to="/resources" isActive={location.pathname === "/resources"}>Resources</MenuItem>
+      </LeftMenu>
       {isLoggedIn && (
-        <Menu>
-          <MenuItem to="/home" isActive={location.pathname === "/home"}>Home</MenuItem>
-          <MenuItem to="/resources" isActive={location.pathname === "/resources"}>Resources</MenuItem>
-          <RightMenu>
-            <HamburgerButton isActive={isDropdownOpen} onClick={handleHamburgerClick}>Settings</HamburgerButton>
-            <DropdownMenu isOpen={isDropdownOpen}>
-              <DropdownItem>Log out</DropdownItem>
-            </DropdownMenu>
-          </RightMenu>
-        </Menu>
+        <RightMenu>
+          <HamburgerButton isActive={location.pathname === "/settings"} onClick={handleHamburgerClick}>Settings</HamburgerButton>
+          <DropdownMenu isOpen={isDropdownOpen}>
+            <DropdownItem onClick={handleLogout}>Log out</DropdownItem>
+          </DropdownMenu>
+        </RightMenu>
       )}
     </HeaderWrapper>
   );
