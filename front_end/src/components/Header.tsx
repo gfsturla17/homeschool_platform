@@ -146,7 +146,7 @@ const DropdownItem = styled.li`
 
 const Header = () => {
   const token = useSelector((state: RootState) => state.auth.token);
-  const userName = useSelector((state: RootState) => state.auth.userName); // Get the user's name from the store
+  const firstName = useSelector((state: RootState) => state.auth.firstName); // Get the user's name from the store
   const isLoggedIn = !!token;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
@@ -183,7 +183,7 @@ const Header = () => {
       <RightMenu>
         {isLoggedIn && (
           <HamburgerButton onClick={handleHamburgerClick}>
-            <UserCircle>{userName?.charAt(0).toUpperCase()}</UserCircle>
+            <UserCircle>{firstName?.charAt(0).toUpperCase()}</UserCircle>
           </HamburgerButton>
         )}
         <DropdownMenu isOpen={isDropdownOpen}>

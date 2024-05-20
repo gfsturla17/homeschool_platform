@@ -1,4 +1,6 @@
 interface TeacherProfile {
+  firstName: string;
+  lastName: string;
   biography: string;
   experience: number;
   email: string;

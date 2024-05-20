@@ -1,18 +1,20 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import TeacherProfile from "../models/TeacherProfile";
+import { UpdateTeacherProfileRequestDTO } from "shared-nextdoor-education/dist/update-teacher-profile-request.dto";
 
 interface TeacherState {
   isRegistered: boolean;
   error: string | null;
   id: string | null;
-  profile: any; // Add a new property to store the teacher's profile
+  profile: any;
 }
 
 const initialState: TeacherState = {
   isRegistered: false,
   error: null,
   id: null,
-  profile: null, // Initialize the profile as null
+  profile: null,
 };
 
 export const registerTeacher = createAsyncThunk(
@@ -20,6 +22,18 @@ export const registerTeacher = createAsyncThunk(
   async (teacherSignUpDTO: any, { rejectWithValue }) => {
     try {
       const response = await axios.post('http://127.0.0.1:3000/teacher/signup', teacherSignUpDTO);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateTeacherProfileAction = createAsyncThunk(
+  'teacher/updateProfile',
+  async ({ id, profile }: { id: string; profile: UpdateTeacherProfileRequestDTO }, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch(`http://127.0.0.1:3000/teacher/${id}/profile`, profile);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -58,6 +72,12 @@ const teacherSlice = createSlice({
       state.profile = action.payload; // Store the teacher's profile in the state
     });
     builder.addCase(getTeacherProfile.rejected, (state, action: PayloadAction<any>) => {
+      state.error = action.payload.message || action.payload;
+    });
+    builder.addCase(updateTeacherProfileAction.fulfilled, (state, action) => {
+      state.profile = action.payload; // Update the teacher's profile in the state
+    });
+    builder.addCase(updateTeacherProfileAction.rejected, (state, action: PayloadAction<any>) => {
       state.error = action.payload.message || action.payload;
     });
   },

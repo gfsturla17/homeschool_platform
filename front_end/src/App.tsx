@@ -13,6 +13,7 @@ import Modal from "react-modal";
 import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import ProfileSettings from "./components/ProfileSettings";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
@@ -24,6 +25,7 @@ function App() {
       <>
         <GlobalStyle />
         <BrowserRouter>
+          <ToastContainer />
           <Header />
           <Routes>
             <Route path="/" element={isLoggedIn ? <Navigate to="/home" replace={true} /> : <LandingPage />} />

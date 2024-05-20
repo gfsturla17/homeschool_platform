@@ -3,7 +3,7 @@ export declare class GetTeacherProfileResponseDTO {
     lastName: string;
     email: string;
     phone: string;
-    address: string | null;
+    address: string;
     city: string;
     state: string;
     biography: string;

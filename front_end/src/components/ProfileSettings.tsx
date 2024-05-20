@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { useDispatch, useSelector } from "react-redux";
-import { getTeacherProfile } from "../store/teacherSlice";
+import { getTeacherProfile, updateTeacherProfileAction } from "../store/teacherSlice";
 import { AppDispatch, RootState } from "../store/store";
 import TeacherProfile from "../models/TeacherProfile";
+import Button from "./Button";
+import { UpdateTeacherProfileRequestDTO } from "shared-nextdoor-education/dist/update-teacher-profile-request.dto";
 
 const Container = styled.div`
     width: 85%;
@@ -135,8 +137,8 @@ const ProfileSettings = () => {
   const dispatch = useDispatch<AppDispatch>();
   const teacherProfileData = useSelector((state: RootState) => state.teacher.profile);
   const [teacherProfile, setTeacherProfile] = useState<TeacherProfile>({} as TeacherProfile);
-  const [userName, setUserName] = useState('');
-  const [firstLetter, setFirstLetter] = useState('');
+  const [fetched, setFetched] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const handleUploadClick = () => {
     const input = document.createElement('input');
@@ -150,15 +152,11 @@ const ProfileSettings = () => {
 
   useEffect(() => {
     const storedTeacherId = localStorage.getItem('teacher_id');
-    if (storedTeacherId) {
+    if (!fetched && storedTeacherId) {
       dispatch(getTeacherProfile(storedTeacherId));
+      setFetched(true);
     }
-    const storedUserName = localStorage.getItem('userName');
-    if (storedUserName) {
-      setUserName(storedUserName);
-      setFirstLetter(storedUserName.charAt(0).toUpperCase());
-    }
-  }, [dispatch]);
+  }, [dispatch, fetched]);
 
   useEffect(() => {
     if (teacherProfileData) {
@@ -167,152 +165,219 @@ const ProfileSettings = () => {
   }, [teacherProfileData]);
 
   const updateTeacherProfile = (newProfile: TeacherProfile) => {
+    const hasActualChanges = Object.keys(newProfile).some((key) => {
+      return newProfile[key] !== teacherProfileData[key];
+    });
+
+    setHasChanges(hasActualChanges);
     setTeacherProfile(newProfile);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const teacherId = teacherProfileData.id;
+      if (!teacherId) {
+        throw new Error('Teacher ID not found');
+      }
+
+      const updateTeacherProfileRequestDTO: UpdateTeacherProfileRequestDTO = {
+        firstName: teacherProfile.firstName,
+        lastName: teacherProfile.lastName,
+        email: teacherProfile.email,
+        phone: teacherProfile.phone,
+        address: teacherProfile.address,
+        city: teacherProfile.city,
+        state: teacherProfile.state,
+        biography: teacherProfile.biography,
+        tiktokLink: teacherProfile.tiktokLink,
+        twitterLink: teacherProfile.twitterLink,
+        facebookLink: teacherProfile.facebookLink,
+        instagramLink: teacherProfile.instagramLink,
+      };
+
+      await dispatch(updateTeacherProfileAction({ id: teacherId, profile: updateTeacherProfileRequestDTO }));
+      setHasChanges(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <Container>
       <Header>Profile Settings</Header>
-      <SectionsContainer>
-        <LeftSection>
-          <ProfilePhoto>
-            {firstLetter}
-            <UploadButton onClick={handleUploadClick} />
-          </ProfilePhoto>
-          <Section>
-            <Heading>About You</Heading>
-            <FormGroup>
-              <Input
-                type="text"
-                id="biography"
-                placeholder=" "
-                value={teacherProfile?.biography}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, biography: e.target.value })}
-              />
-              <Label htmlFor="biography">Biography</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="number"
-                id="experience"
-                placeholder=" "
-                value={teacherProfile?.experience}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, experience: Number(e.target.value) })}
-              />
-              <Label htmlFor="experience">Year of Teaching Experience</Label>
-            </FormGroup>
-          </Section>
-          <Section>
-            <Heading>Contact Information</Heading>
-            <FormGroup>
-              <Input
-                type="email"
-                id="email"
-                placeholder=" "
-                value={teacherProfile?.email}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, email: e.target.value })}
-              />
-              <Label htmlFor="email">Email</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="tel"
-                id="phone"
-                placeholder=" "
-                value={teacherProfile?.phone}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, phone: e.target.value })}
-              />
-              <Label htmlFor="phone">Phone Number</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                id="address"
-                placeholder=" "
-                value={teacherProfile?.address}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, address: e.target.value })}
-              />
-              <Label htmlFor="address">Address</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                id="city"
-                placeholder=" "
-                value={teacherProfile?.city}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, city: e.target.value })}
-              />
-              <Label htmlFor="city">City</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="text"
-                id="state"
-                placeholder=" "
-                value={teacherProfile?.state}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, state: e.target.value })}
-              />
-              <Label htmlFor="state">State</Label>
-            </FormGroup>
-          </Section>
-          <Section>
-            <Heading>Social Media Links</Heading>
-            <FormGroup>
-              <Input
-                type="url"
-                id="instagram"
-                placeholder=" "
-                value={teacherProfile?.instagramLink}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, instagramLink: e.target.value })}
-              />
-              <Label htmlFor="instagram">Instagram Link</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="url"
-                id="tiktok"
-                placeholder=" "
-                value={teacherProfile?.tiktokLink}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, tiktokLink: e.target.value })}
-              />
-              <Label htmlFor="tiktok">TikTok Link</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="url"
-                id="facebook"
-                placeholder=" "
-                value={teacherProfile?.facebookLink}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, facebookLink: e.target.value })}
-              />
-              <Label htmlFor="facebook">Facebook Link</Label>
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="url"
-                id="twitter"
-                placeholder=" "
-                value={teacherProfile?.twitterLink}
-                onChange={(e) => updateTeacherProfile({ ...teacherProfile, twitterLink: e.target.value })}
-              />
-              <Label htmlFor="twitter">Twitter Link</Label>
-            </FormGroup>
-          </Section>
-        </LeftSection>
-        <RightSection>
-          <Section>
-            <Heading>Privacy Settings</Heading>
-            {/* Add privacy settings form here */}
-          </Section>
-          <Section>
-            <Heading>Email Settings</Heading>
-            {/* Add email settings form here */}
-          </Section>
-        </RightSection>
-      </SectionsContainer>
+      {teacherProfileData ? (
+        <SectionsContainer>
+          <LeftSection>
+            <ProfilePhoto>
+              {teacherProfileData.firstName ? teacherProfileData.firstName.charAt(0).toUpperCase() : ''}
+              <UploadButton onClick={handleUploadClick} />
+            </ProfilePhoto>
+            <Section>
+              <Heading>About You</Heading>
+              <FormGroup>
+                <Input
+                  type="text"
+                  id="firstName"
+                  placeholder=" "
+                  value={teacherProfile?.firstName}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, firstName: e.target.value })}
+                />
+                <Label htmlFor="firstName">First Name</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="text"
+                  id="lastName"
+                  placeholder=" "
+                  value={teacherProfile?.lastName}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, lastName: e.target.value })}
+                />
+                <Label htmlFor="lastName">Last Name</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="text"
+                  id="biography"
+                  placeholder=" "
+                  value={teacherProfile?.biography}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, biography: e.target.value })}
+                />
+                <Label htmlFor="biography">Biography</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="number"
+                  id="experience"
+                  placeholder=" "
+                  value={teacherProfile?.experience}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, experience: Number(e.target.value) })}
+                />
+                <Label htmlFor="experience">Year of Teaching Experience</Label>
+              </FormGroup>
+            </Section>
+            <Section>
+              <Heading>Contact Information</Heading>
+              <FormGroup>
+                <Input
+                  type="email"
+                  id="email"
+                  placeholder=" "
+                  value={teacherProfile?.email}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, email: e.target.value })}
+                />
+                <Label htmlFor="email">Email</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="tel"
+                  id="phone"
+                  placeholder=" "
+                  value={teacherProfile?.phone}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, phone: e.target.value })}
+                />
+                <Label htmlFor="phone">Phone Number</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="text"
+                  id="address"
+                  placeholder=" "
+                  value={teacherProfile?.address}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, address: e.target.value })}
+                />
+                <Label htmlFor="address">Address</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="text"
+                  id="city"
+                  placeholder=" "
+                  value={teacherProfile?.city}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, city: e.target.value })}
+                />
+                <Label htmlFor="city">City</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="text"
+                  id="state"
+                  placeholder=" "
+                  value={teacherProfile?.state}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, state: e.target.value })}
+                />
+                <Label htmlFor="state">State</Label>
+              </FormGroup>
+            </Section>
+            <Section>
+              <Heading>Social Media Links</Heading>
+              <FormGroup>
+                <Input
+                  type="url"
+                  id="instagram"
+                  placeholder=" "
+                  value={teacherProfile?.instagramLink}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, instagramLink: e.target.value })}
+                />
+                <Label htmlFor="instagram">Instagram Link</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="url"
+                  id="tiktok"
+                  placeholder=" "
+                  value={teacherProfile?.tiktokLink}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, tiktokLink: e.target.value })}
+                />
+                <Label htmlFor="tiktok">TikTok Link</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="url"
+                  id="facebook"
+                  placeholder=" "
+                  value={teacherProfile?.facebookLink}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, facebookLink: e.target.value })}
+                />
+                <Label htmlFor="facebook">Facebook Link</Label>
+              </FormGroup>
+              <FormGroup>
+                <Input
+                  type="url"
+                  id="twitter"
+                  placeholder=" "
+                  value={teacherProfile?.twitterLink}
+                  onChange={(e) => updateTeacherProfile({ ...teacherProfile, twitterLink: e.target.value })}
+                />
+                <Label htmlFor="twitter">Twitter Link</Label>
+              </FormGroup>
+            </Section>
+          </LeftSection>
+          <RightSection>
+            <Section>
+              <Heading>Privacy Settings</Heading>
+              {/* Add privacy settings form here */}
+            </Section>
+            <Section>
+              <Heading>Email Settings</Heading>
+              {/* Add email settings form here */}
+            </Section>
+          </RightSection>
+        </SectionsContainer>
+      ) : (
+        <p>Loading profile...</p>  // Loading indicator or message
+      )}
+      <Button
+        disabled={!hasChanges}
+        style={{
+          backgroundColor: hasChanges ? 'green' : '#ccc',
+          color: hasChanges ? 'white' : '#666',
+        }}
+        onClick={handleSubmit}
+      >
+        Save Changes
+      </Button>
     </Container>
   );
 };
 
 export default ProfileSettings;
-
