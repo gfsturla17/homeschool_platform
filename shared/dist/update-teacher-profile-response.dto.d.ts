@@ -1,4 +1,5 @@
-export declare class UpdateTeacherProfileRequestDTO {
+export declare class UpdateTeacherProfileResponseDTO {
+    id: number;
     firstName: string;
     lastName: string;
     email: string;

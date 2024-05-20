@@ -1,42 +1,30 @@
-.form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.container {
+    max-width: 800px;
+    margin: 40px auto;
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.section {
+    background-color: #f9f9f9;
     padding: 20px;
-    border-radius: 10px;
-}
-
-.form-input {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
 }
 
-.error-asterisk {
-    color: red;
-    position: absolute;
-    top: 0;
-    right: -10px;
+h2 {
+    margin-top: 0;
 }
 
-.error-message {
-    color: red;
-    white-space: pre-wrap;
+.form-group {
+    margin-bottom: 20px;
 }
 
-.separator {
-    border-top: 1px solid gray;
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.form-group input, .form-group textarea {
     width: 100%;
-    margin: 20px 0;
-}
-
-.fixed-width {
-    width: 600px;
+    padding: 10px;
+    font-size: 16px;
 }

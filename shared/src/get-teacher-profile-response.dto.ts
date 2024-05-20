@@ -1,6 +1,6 @@
 import { IsEmail, IsString } from "class-validator";
 
-export class UpdateTeacherProfileRequestDTO {
+export class GetTeacherProfileResponseDTO {
   @IsString()
   firstName!: string;
 

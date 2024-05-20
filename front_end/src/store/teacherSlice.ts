@@ -19,7 +19,7 @@ export const registerTeacher = createAsyncThunk(
   'teacher/registerTeacher',
   async (teacherSignUpDTO: any, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://127.0.0.1:3000/teachers/signup', teacherSignUpDTO);
+      const response = await axios.post('http://127.0.0.1:3000/teacher/signup', teacherSignUpDTO);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -28,11 +28,11 @@ export const registerTeacher = createAsyncThunk(
 );
 
 export const getTeacherProfile = createAsyncThunk(
-  'teacher/getTeacherProfile',
+  'teacher/profile',
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://127.0.0.1:3000/teachers/${id}/profile`);
-      console.log(response.data); // Print the response to the console
+      const response = await axios.get(`http://127.0.0.1:3000/teacher/${id}/profile`);
+      console.log(response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);

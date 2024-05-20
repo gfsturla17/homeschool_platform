@@ -9,56 +9,56 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateTeacherProfileRequestDTO = void 0;
+exports.GetTeacherProfileResponseDTO = void 0;
 const class_validator_1 = require("class-validator");
-class UpdateTeacherProfileRequestDTO {
+class GetTeacherProfileResponseDTO {
 }
-exports.UpdateTeacherProfileRequestDTO = UpdateTeacherProfileRequestDTO;
+exports.GetTeacherProfileResponseDTO = GetTeacherProfileResponseDTO;
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "firstName", void 0);
+], GetTeacherProfileResponseDTO.prototype, "firstName", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "lastName", void 0);
+], GetTeacherProfileResponseDTO.prototype, "lastName", void 0);
 __decorate([
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "email", void 0);
+], GetTeacherProfileResponseDTO.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "phone", void 0);
+], GetTeacherProfileResponseDTO.prototype, "phone", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "address", void 0);
+], GetTeacherProfileResponseDTO.prototype, "address", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "city", void 0);
+], GetTeacherProfileResponseDTO.prototype, "city", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "state", void 0);
+], GetTeacherProfileResponseDTO.prototype, "state", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "biography", void 0);
+], GetTeacherProfileResponseDTO.prototype, "biography", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "tiktokLink", void 0);
+], GetTeacherProfileResponseDTO.prototype, "tiktokLink", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "twitterLink", void 0);
+], GetTeacherProfileResponseDTO.prototype, "twitterLink", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "facebookLink", void 0);
+], GetTeacherProfileResponseDTO.prototype, "facebookLink", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "instagramLink", void 0);
+], GetTeacherProfileResponseDTO.prototype, "instagramLink", void 0);

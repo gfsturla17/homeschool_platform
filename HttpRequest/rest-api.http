@@ -15,25 +15,30 @@ Content-Type: application/json
   "password": "12345"
 }
 ### Get a teacher's profile by ID
-GET http://localhost:3000/teachers/14/profile
+GET http://localhost:3000/teachers/20/profile
 
 ### Delete a teacher by email
 DELETE http://localhost:3000/teachers/john-doe@example.com
 
 ### Update Teacher Profile
-PUT http://localhost:3000/teachers/40/profile
+PATCH http://localhost:3000/teacher/20/profile
 Content-Type: application/json
 
 {
   "firstName": "John",
   "lastName": "Doe",
-  "address": "123 Main St",
-  "city": "Anytown",
-  "state": "Anystate",
-  "biography": "Experienced teacher with a passion for education.",
-  "profilePictureUrl": "http://example.com/profile-picture.jpg",
-  "socialMediaLinks": "http://twitter.com/johndoe"
+  "email": "john.doe@example.com",
+  "phone": "123-456-7890",
+  "address": "1234 Elm Street",
+  "city": "Springfield",
+  "state": "IL",
+  "biography": "An experienced teacher with over 10 years in education...",
+  "tiktokLink": "http://tiktok.com/@johndoe",
+  "twitterLink": "http://twitter.com/johndoe",
+  "facebookLink": "http://facebook.com/johndoe",
+  "instagramLink": "http://instagram.com/johndoe"
 }
+
 
 ### Login Request
 POST http://localhost:3000/teachers/login
