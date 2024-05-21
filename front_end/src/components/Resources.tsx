@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import styled, { css } from "styled-components";
-import { FaVideo, FaBook, FaFile, FaClipboard, FaLink, FaAngleRight, FaAngleLeft } from "react-icons/fa";
+import {
+  FaVideo,
+  FaBook,
+  FaFile,
+  FaClipboard,
+  FaLink,
+  FaAngleRight,
+  FaAngleLeft,
+  FaThList,
+  FaTimes
+} from "react-icons/fa";
 import { lightTheme } from "../styles/theme";
 import AddResourceModal from "./AddResourceModal";
 import ResourceCard from "./ResourceCard";
@@ -26,7 +36,6 @@ const SideMenu = styled.div<{ isCollapsed: boolean }>`
 interface CollapseButtonProps {
   isCollapsed: boolean;
 }
-
 
 const CollapseButton = styled.button<CollapseButtonProps>`
     position: absolute;
@@ -54,7 +63,6 @@ const CollapseButton = styled.button<CollapseButtonProps>`
                         }
                     `}
 `;
-
 
 const MenuItem = styled.div`
     margin-bottom: 10px;
@@ -92,6 +100,35 @@ const Header = styled.div`
     margin-bottom: 20px;
 `;
 
+const SearchInputContainer = styled.div`
+    position: relative;
+    width: 50%;
+`;
+
+const SearchInput = styled.input`
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    margin: 0 20px;
+`;
+
+const ClearButton = styled.button`
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #ccc;
+`;
+
+const HighlightedText = styled.span`
+    background-color: #ADD8E6;
+`;
+
 const Button = styled.button`
     background-color: #4CAF50;
     color: #fff;
@@ -111,23 +148,56 @@ interface MenuItemType {
   icon: JSX.Element;
 }
 
+const menuItems: MenuItemType[] = [
+  { text: 'All Resources', icon: <FaThList /> },
+  { text: 'Video', icon: <FaVideo /> },
+  { text: 'eBooks', icon: <FaBook /> },
+  { text: 'Documents', icon: <FaFile /> },
+  { text: 'Worksheets', icon: <FaClipboard /> },
+  { text: 'Links', icon: <FaLink /> },
+];
+
 const Resources = () => {
-  const [selectedMenuItem, setSelectedMenuItem] = useState('Video');
+  const [selectedMenuItem, setSelectedMenuItem] = useState('All Resources');
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [resources, setResources] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleAddResource = (title: string, description: string, type: string) => {
     setResources([...resources, { title, description, type }]);
   };
 
-  const menuItems: MenuItemType[] = [
-    { text: 'Video', icon: <FaVideo /> },
-    { text: 'eBooks', icon: <FaBook /> },
-    { text: 'Documents', icon: <FaFile /> },
-    { text: 'Worksheets', icon: <FaClipboard /> },
-    { text: 'Links', icon: <FaLink /> },
-  ];
+  const handleDeleteResource = (index: number) => {
+    const newResources = [...resources];
+    newResources.splice(index, 1);
+    setResources(newResources);
+  };
+
+  const handleEditResource = (index: number, title: string, description: string, type: string) => {
+    const newResources = [...resources];
+    newResources[index] = { title, description, type };
+    setResources(newResources);
+  };
+
+  const highlightText = (text: string) => {
+    if (!searchQuery) return text;
+    const regex = new RegExp(searchQuery, 'gi');
+    const match = text.match(regex);
+    if (!match) return text;
+    return (
+      <React.Fragment>
+        {text.split(regex).map((part, index) => (
+          <React.Fragment key={index}>
+            {part}
+            {index < match.length && (
+              <HighlightedText>{match[index]}</HighlightedText>
+            )}
+          </React.Fragment>
+        ))}
+      </React.Fragment>
+    );
+  };
 
   return (
     <ResourcesContainer>
@@ -145,10 +215,33 @@ const Resources = () => {
       <MainContent>
         <Header>
           <h2>{selectedMenuItem}</h2>
+          <SearchInputContainer>
+            <SearchInput
+              type="text"
+              placeholder="Search resources..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <ClearButton onClick={() => setSearchQuery('')}>
+                <FaTimes />
+              </ClearButton>
+            )}
+          </SearchInputContainer>
           <Button onClick={() => setIsModalOpen(true)}>Add New Resource</Button>
         </Header>
-        {resources.map((resource, index) => (
-          <ResourceCard key={index} title={resource.title} description={resource.description} type={resource.type} />
+        {resources.filter(resource =>
+          (selectedMenuItem === 'All Resources' || resource.type === selectedMenuItem) &&
+          (resource.title.toLowerCase().includes(searchQuery.toLowerCase()) || resource.description.toLowerCase().includes(searchQuery.toLowerCase()))
+        ).map((resource, index) => (
+          <ResourceCard
+            key={index}
+            title={highlightText(resource.title)}
+            description={highlightText(resource.description)}
+            type={resource.type}
+            onDelete={() => handleDeleteResource(index)}
+            onEdit={(title, description, type) => handleEditResource(index, title, description, type)}
+          />
         ))}
       </MainContent>
       {isModalOpen && (

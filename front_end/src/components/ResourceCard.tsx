@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { ReactNode, useState } from "react";
 import styled from 'styled-components';
 import { FaVideo, FaBook, FaFile, FaClipboard, FaLink } from "react-icons/fa";
+import AddResourceModal from "./AddResourceModal";
+import { ModalBackground, ModalContainer, CloseIcon, Button } from "./shared-styles";
 
 const ResourceCardContainer = styled.div`
     background-color: #fff;
@@ -71,12 +73,17 @@ const DeleteButton = styled.button`
 `;
 
 interface ResourceCardProps {
-  title: string;
-  description: string;
+  title: ReactNode;
+  description: ReactNode;
   type: string;
+  onDelete: () => void;
+  onEdit: (title: string, description: string, type: string) => void;
 }
 
-const ResourceCard: React.FC<ResourceCardProps> = ({ title, description, type }) => {
+const ResourceCard: React.FC<ResourceCardProps> = ({ title, description, type, onDelete, onEdit }) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   const getIcon = () => {
     switch (type) {
       case 'Video':
@@ -94,6 +101,16 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ title, description, type })
     }
   };
 
+  const handleDelete = () => {
+    onDelete();
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleEdit = (title: string, description: string, type: string) => {
+    onEdit(title, description, type);
+    setIsEditModalOpen(false);
+  };
+
   return (
     <ResourceCardContainer>
       <IconContainer>{getIcon()}</IconContainer>
@@ -104,9 +121,29 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ title, description, type })
       </InfoContainer>
       <ButtonContainer>
         <ViewButton>View</ViewButton>
-        <EditButton>Edit</EditButton>
-        <DeleteButton>Delete</DeleteButton>
+        <EditButton onClick={() => setIsEditModalOpen(true)}>Edit</EditButton>
+        <DeleteButton onClick={() => setIsDeleteModalOpen(true)}>Delete</DeleteButton>
       </ButtonContainer>
+      {isDeleteModalOpen && (
+        <ModalBackground onClick={() => setIsDeleteModalOpen(false)}>
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
+            <CloseIcon onClick={() => setIsDeleteModalOpen(false)}>X</CloseIcon>
+            <h2>Delete Resource</h2>
+            <p>Are you sure you want to delete this resource?</p>
+            <Button variant="delete" onClick={handleDelete}>DELETE</Button>
+          </ModalContainer>
+        </ModalBackground>
+      )}
+      {isEditModalOpen && (
+        <AddResourceModal
+          onClose={() => setIsEditModalOpen(false)}
+          onAddResource={handleEdit}
+          initialTitle={title.toString()}
+          initialDescription={description.toString()}
+          initialType={type}
+          buttonText="Save Changes"
+        />
+      )}
     </ResourceCardContainer>
   );
 };
