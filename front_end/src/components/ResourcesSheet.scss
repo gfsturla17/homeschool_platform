@@ -1,53 +1,12 @@
-@import 'variables';
-
-.resources-container {
-  display: flex;
+.collapse-icon {
+  font-size: 18px;
+  transition: transform 0.3s;
 }
 
-.menu {
-  width: 20%;
-  margin-left: 10%;
+.hovered .collapse-icon {
+  transform: rotate(45deg);
 }
 
-.menu h1, .menu h2 {
-  font-weight: $menu-font-weight;
-}
-
-.menu ul {
-  list-style: none;
-  padding: 0;
-}
-
-.menu > ul > li {
-  cursor: pointer;
-  color: darken($main-color, 10%);
-  font-weight: 500;
-}
-
-.menu li.active {
-  font-weight: 700; /* Make the selected main menu item text bolder */
-}
-
-.menu li img {
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  transition: transform 0.3s ease-in-out;
-}
-
-.menu li img.collapsed {
-  transform: rotate(-90deg);
-}
-
-.menu li ul {
-  padding-left: 40px; /* Increased padding to indent sub-menu items */
-}
-
-.menu li ul li {
-  color: $main-color; /* Reset color for sub-menu items */
-  font-weight: 400; /* Reset font weight for sub-menu items */
-}
-
-.content {
-  width: 70%;
+.collapsed .collapse-icon {
+  transform: rotate(-45deg);
 }

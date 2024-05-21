@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "./store/store";
 import ProfileSettings from "./components/ProfileSettings";
 import { ToastContainer } from "react-toastify";
+import TeacherDashboard from "./components/TeacherDashboard";
+import ResourcePage from "./components/ResourcePage";
 
 function App() {
   const [theme, setTheme] = useState(lightTheme);
@@ -31,8 +33,9 @@ function App() {
             <Route path="/" element={isLoggedIn ? <Navigate to="/home" replace={true} /> : <LandingPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/complete-profile" element={<CompleteProfileForm />} />
-              <Route path="/home" element={<Home />} />
+              <Route path="/home" element={<TeacherDashboard />} />
               <Route path="/resources" element={<Resources />} />
+              <Route path="/resource_page" element={<ResourcePage />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
             </Route>
           </Routes>
