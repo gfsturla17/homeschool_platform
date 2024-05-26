@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { lightTheme } from "../styles/theme";
+import { lightTheme } from "../../styles/theme";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { RootState } from "../../store/store";
 
 interface UploadNotificationProps {
   resourceName: string;

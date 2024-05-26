@@ -5,7 +5,7 @@ import GlobalStyle from './styles/GlobalStyle';
 import { lightTheme, darkTheme } from './styles/theme';
 import LandingPage from './components/LandingPage';
 import CompleteProfileForm from './components/CompleteProfileForm';
-import Resources from "./components/Resources";
+import Resources from "./components/Pages/ResourcePage/Resources";
 import Home from "./components/Home";
 import Header from "./components/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -15,7 +15,6 @@ import { AppDispatch, RootState } from "./store/store";
 import ProfileSettings from "./components/ProfileSettings";
 import { ToastContainer } from "react-toastify";
 import TeacherDashboard from "./components/TeacherDashboard";
-import ResourcePage from "./components/ResourcePage";
 import { rehydrateAuth } from "./store/authSlice";
 
 function App() {
@@ -41,7 +40,6 @@ function App() {
               <Route path="/complete-profile" element={<CompleteProfileForm />} />
               <Route path="/home" element={<TeacherDashboard />} />
               <Route path="/resources" element={<Resources />} />
-              <Route path="/resource_page" element={<ResourcePage />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
             </Route>
           </Routes>

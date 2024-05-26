@@ -1,79 +1,14 @@
 import React, { ReactNode, useState } from "react";
-import styled from 'styled-components';
 import { FaVideo, FaBook, FaFile, FaClipboard, FaLink } from "react-icons/fa";
+import { ModalBackground, ModalContainer, CloseIcon, Button } from "../shared-styles";
 import AddResourceModal from "./AddResourceModal";
-import { ModalBackground, ModalContainer, CloseIcon, Button } from "./shared-styles";
-import { deleteResource } from "../store/resourceSlice";
-import { AppDispatch } from "../store/store";
-import { useDispatch } from "react-redux";
-
-const ResourceCardContainer = styled.div`
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-`;
-
-const IconContainer = styled.div`
-    margin-right: 20px;
-    font-size: 40px;
-`;
-
-const InfoContainer = styled.div`
-    flex-grow: 1;
-`;
-
-const ButtonContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const ViewButton = styled.button`
-    background-color: #3498db;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 5px;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #2980b9;
-    }
-`;
-
-const EditButton = styled.button`
-    background-color: #e67e22;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 5px;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #d35400;
-    }
-`;
-
-const DeleteButton = styled.button`
-    background-color: #e74c3c;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #c0392b;
-    }
-`;
+import {
+  ButtonContainer, DeleteButton, EditButton,
+  IconContainer,
+  InfoContainer,
+  ResourceCardContainer,
+  ViewButton
+} from "./styles/ResourceCardStyles";
 
 interface ResourceCardProps {
   id: any;
@@ -81,14 +16,12 @@ interface ResourceCardProps {
   description: ReactNode;
   type: string;
   onDelete: () => void;
-  onEdit: (title: string, description: string, type: string) => void;
+  onEdit: (title: string, description: string, file?: File, link?: string) => void;
 }
 
 const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, type, onDelete, onEdit }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
-
 
   const getIcon = () => {
     switch (type) {
@@ -108,12 +41,12 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, typ
   };
 
   const handleDelete = () => {
-    onDelete()
+    onDelete();
     setIsDeleteModalOpen(false);
   };
 
-  const handleEdit = (title: string, description: string, type: string) => {
-    onEdit(title, description, type);
+  const handleEdit = (title: string, description: string, file?: File, link?: string) => {
+    onEdit(title, description, file, link);
     setIsEditModalOpen(false);
   };
 
@@ -143,11 +76,12 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, typ
       {isEditModalOpen && (
         <AddResourceModal
           onClose={() => setIsEditModalOpen(false)}
-          onAddResource={handleEdit}
+          onEditResource={handleEdit}
           initialTitle={title.toString()}
           initialDescription={description.toString()}
           initialType={type}
           buttonText="Save Changes"
+          isEditMode={true}
         />
       )}
     </ResourceCardContainer>

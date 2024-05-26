@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTeacherProfile, updateTeacherProfileAction } from "../store/teacherSlice";
 import { AppDispatch, RootState } from "../store/store";
 import TeacherProfile from "../models/TeacherProfile";
-import Button from "./Button";
+import Button from "./Common/Button";
 import { UpdateTeacherProfileRequestDTO } from "shared-nextdoor-education/dist/update-teacher-profile-request.dto";
 
 const Container = styled.div`
