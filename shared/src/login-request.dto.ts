@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty } from "class-validator";
-export class LoginTeacherRequestDTO {
+export class LoginRequestDTO {
 
   @IsNotEmpty()
   @IsEmail()
@@ -7,4 +7,6 @@ export class LoginTeacherRequestDTO {
 
   @IsNotEmpty()
   password: string;
+
+  role: 'teacher' | 'parent';
 }

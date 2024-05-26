@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import {
   FaVideo,
@@ -9,11 +9,19 @@ import {
   FaAngleRight,
   FaAngleLeft,
   FaThList,
-  FaTimes
+  FaTimes, FaBell
 } from "react-icons/fa";
 import { lightTheme } from "../styles/theme";
 import AddResourceModal from "./AddResourceModal";
 import ResourceCard from "./ResourceCard";
+import UploadNotification from "./UploadNotification";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch, faUpload } from "@fortawesome/free-solid-svg-icons";
+import { addResource, deleteResource, getResources } from "../store/resourceSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store/store";
+import { Root } from "react-dom/client";
+import { getTeacherProfile } from "../store/teacherSlice";
 
 interface MenuItemIconProps {
   isCollapsed: boolean;
@@ -39,29 +47,48 @@ interface CollapseButtonProps {
 
 const CollapseButton = styled.button<CollapseButtonProps>`
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: -20px;
-    background-color: ${lightTheme.colors.primary};
-    color: #fff;
-    padding: 5px;
+    top: 40%; /* Center the button vertically */
+    transform: translateY(-50%); /* Center the button vertically */
+    right: ${props => props.isCollapsed ? '-15px' : '-25px'};
+    background-color: rgba(79, 80, 83, 0.94); /* More transparent */
+    color: #b4c0fd;
+    padding: 10px; /* Adjust padding */
     border: none;
-    border-radius: 50%;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: all 0.3s;
+    border-radius: 5px; /* Rectangle shape */
+    width: 20px; /* Slimmer and longer */
+    height: 80px; /* Adjust height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    ${(props) =>
-            props.isCollapsed
-                    ? css`
-                        &:hover {
-                            transform: rotate(180deg);
-                        }
-                    `
-                    : css`
-                        &:hover {
-                            transform: rotate(0deg);
-                        }
-                    `}
+    .vertical-line {
+        display: block;
+        width: 4px;
+        height: 20px;
+        background-color: #fff;
+    }
+
+    .angle-arrow {
+        display: none;
+        font-size: 20px; /* Slightly smaller icon */
+        color: #fff;
+    }
+
+    &:hover {
+        background-color: rgb(0, 26, 43); /* Less transparent on hover */
+        width: 25px; /* Slimmer and longer */
+
+    }
+
+    &:hover .vertical-line {
+        display: none;
+    }
+
+    &:hover .angle-arrow {
+        display: block;
+    }
 `;
 
 const MenuItem = styled.div`
@@ -158,26 +185,55 @@ const menuItems: MenuItemType[] = [
 ];
 
 const Resources = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [selectedMenuItem, setSelectedMenuItem] = useState('All Resources');
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [resources, setResources] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isUploadNotificationOpen, setIsUploadNotificationOpen] = useState(false);
+  const [uploadingResourceName, setUploadingResourceName] = useState('');
+  const teacherId = useSelector((state: RootState) => state.auth.id);
+  const resources = useSelector((state: RootState) => state.resource.resources);
+  const isLoading = useSelector((state: RootState) => state.resource.isLoading);
 
-  const handleAddResource = (title: string, description: string, type: string) => {
-    setResources([...resources, { title, description, type }]);
+  useEffect(() => {
+    const storedTeacherId = localStorage.getItem('teacher_id');
+
+    if (storedTeacherId) {
+      dispatch(getResources(teacherId));
+      console.log(resources)
+    }
+  }, [dispatch, teacherId]);
+
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsUploadNotificationOpen(false);
+    }
+  }, [isLoading]);
+
+  const handleAddResource = (title, description, type, file, link) => {
+    setUploadingResourceName(title);
+    setIsUploadNotificationOpen(true);
+
+    const resource = {
+      title,
+      description,
+      resourceType: type,
+      file: file ? file.name : link
+    };
+
+    dispatch(addResource({teacherId, resource }));
   };
 
-  const handleDeleteResource = (index: number) => {
-    const newResources = [...resources];
-    newResources.splice(index, 1);
-    setResources(newResources);
+  const handleDeleteResource = (id: number) => {
+    dispatch(deleteResource(id));
   };
 
   const handleEditResource = (index: number, title: string, description: string, type: string) => {
     const newResources = [...resources];
     newResources[index] = { title, description, type };
-    setResources(newResources);
   };
 
   const highlightText = (text: string) => {
@@ -209,8 +265,22 @@ const Resources = () => {
           </MenuItem>
         ))}
         <CollapseButton onClick={() => setIsCollapsed(!isCollapsed)} isCollapsed={isCollapsed}>
-          {isCollapsed ? <FaAngleRight /> : <FaAngleLeft />}
+          <span className="vertical-line">|</span>
+          <span className="angle-arrow">
+      {isCollapsed ? <FaAngleRight /> : <FaAngleLeft />}
+    </span>
         </CollapseButton>
+        <div style={{ flex: 1 }} />
+        {isLoading && !isUploadNotificationOpen && (
+          <MenuItem onClick={() => setIsUploadNotificationOpen(true)}>
+            <FontAwesomeIcon
+              icon={faCircleNotch}
+              spin
+              color="white"
+              size="lg"
+            />
+          </MenuItem>
+        )}
       </SideMenu>
       <MainContent>
         <Header>
@@ -236,10 +306,11 @@ const Resources = () => {
         ).map((resource, index) => (
           <ResourceCard
             key={index}
+            id={resource.id} // Pass the id of the resource
             title={highlightText(resource.title)}
             description={highlightText(resource.description)}
             type={resource.type}
-            onDelete={() => handleDeleteResource(index)}
+            onDelete={() => handleDeleteResource(resource.id)}
             onEdit={(title, description, type) => handleEditResource(index, title, description, type)}
           />
         ))}
@@ -250,6 +321,11 @@ const Resources = () => {
           onAddResource={handleAddResource}
         />
       )}
+      <UploadNotification
+        resourceName={uploadingResourceName}
+        isOpen={isUploadNotificationOpen}
+        onClose={() => setIsUploadNotificationOpen(false)}
+      />
     </ResourcesContainer>
   );
 };

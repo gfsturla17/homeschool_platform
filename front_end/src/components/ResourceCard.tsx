@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { FaVideo, FaBook, FaFile, FaClipboard, FaLink } from "react-icons/fa";
 import AddResourceModal from "./AddResourceModal";
 import { ModalBackground, ModalContainer, CloseIcon, Button } from "./shared-styles";
+import { deleteResource } from "../store/resourceSlice";
+import { AppDispatch } from "../store/store";
+import { useDispatch } from "react-redux";
 
 const ResourceCardContainer = styled.div`
     background-color: #fff;
@@ -73,6 +76,7 @@ const DeleteButton = styled.button`
 `;
 
 interface ResourceCardProps {
+  id: any;
   title: ReactNode;
   description: ReactNode;
   type: string;
@@ -80,9 +84,11 @@ interface ResourceCardProps {
   onEdit: (title: string, description: string, type: string) => void;
 }
 
-const ResourceCard: React.FC<ResourceCardProps> = ({ title, description, type, onDelete, onEdit }) => {
+const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, type, onDelete, onEdit }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
 
   const getIcon = () => {
     switch (type) {
@@ -102,7 +108,7 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ title, description, type, o
   };
 
   const handleDelete = () => {
-    onDelete();
+    onDelete()
     setIsDeleteModalOpen(false);
   };
 

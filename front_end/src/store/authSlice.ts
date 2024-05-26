@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { LoginResponseDTO } from "shared-nextdoor-education/dist/login-response-dto";
+import { AppDispatch } from "./store";
 
 interface AuthState {
   token: string | null;
   firstName: string | null; // Add this line
-  id: string | null; // Add this line
+  id: number | null; // Add this line
 }
 
 const initialState: AuthState = {
   token: localStorage.getItem('token'),
-  firstName: localStorage.getItem('userName'), // Retrieve the user's name from local storage
-  id: localStorage.getItem('teacher_id') // Retrieve the user's name from local storage
+  firstName: localStorage.getItem('userName'),
+  id: parseInt(localStorage.getItem('teacher_id') || '0', 10) || null
 };
 
 export const login = createAsyncThunk(
@@ -32,7 +33,11 @@ export const logout = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    rehydrate(state) {
+      state.id = parseInt(localStorage.getItem('teacher_id') || '0', 10) || null;
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
       state.token = action.payload.token;
@@ -52,5 +57,11 @@ const authSlice = createSlice({
     });
   },
 });
+
+export const rehydrateAuth = () => {
+  return (dispatch: AppDispatch) => {
+    dispatch(authSlice.actions.rehydrate());
+  };
+};
 
 export default authSlice.reducer;

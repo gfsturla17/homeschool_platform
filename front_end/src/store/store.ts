@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
 import teacherReducer from './teacherSlice';
+import resourceReducer from './resourceSlice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     teacher: teacherReducer,
+    resource: resourceReducer,
   },
 });
 

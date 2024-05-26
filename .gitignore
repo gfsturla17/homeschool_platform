@@ -170,3 +170,7 @@
 /shared/dist/register-teacher.dto.d.ts
 /shared/dist/register-teacher.dto.js
 /shared/package-lock.json
+/shared/dist/create-resource.dto.d.ts
+/shared/dist/create-resource.dto.js
+/shared/dist/update-resource-request.dto.d.ts
+/shared/dist/update-resource-request.dto.js

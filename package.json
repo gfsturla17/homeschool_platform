@@ -6,5 +6,8 @@
     "front_end",
     "nestjs-backend",
     "shared"
-  ]
+  ],
+  "dependencies": {
+    "react-icons": "^5.2.1"
+  }
 }

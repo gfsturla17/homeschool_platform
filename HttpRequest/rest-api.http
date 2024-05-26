@@ -49,6 +49,61 @@ Content-Type: application/json
   "password": "111"
 }
 
+### Login Request (Teacher)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "abc@gmail.com",
+  "password": "111",
+  "role": "teacher"
+}
+
+### Logout Request
+POST http://localhost:3000/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ3LCJyb2xlIjoidGVhY2hlciIsImlhdCI6MTcxNjY4OTk1NiwiZXhwIjoxNzE2NjkzNTU2fQ.2VhyoQ2fFjqMohc94YGQbju_jQYidx3191l9H465JP0
+
+### Add Resource
+POST http://localhost:3000/teacher/47/resource
+Content-Type: application/json
+
+{
+  "title": "Test Title 2",
+  "description": "Test Description 2",
+  "resourceType": "Video",
+  "file": "test_file_path.pdf"
+}
+
+
+### Get Resources with resourceType
+GET http://localhost:3000/resources/teacher/47
+
+### Add a Resource for a Teacher
+POST http://localhost:3000/resources/teacher/47
+Content-Type: application/json
+
+{
+  "title": "Sample Resource Title",
+  "description": "This is a sample description for the resource.",
+  "resourceType": "Documents",
+  "file": "path/to/resource/file.pdf"
+}
+
+### Delete a Resource by ID
+DELETE http://localhost:3000/resources/9
+Content-Type: application/json
+
+### Update a Resource by ID
+PATCH http://localhost:3000/resources/8
+Content-Type: application/json
+
+{
+"title": "New title 2",
+"description": "New description"
+}
+
+
+
 
 
 
