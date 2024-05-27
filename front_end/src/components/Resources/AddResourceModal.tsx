@@ -60,20 +60,18 @@ const AddResourceModal: React.FC<AddResourceModalProps> = ({
   };
 
   const handleEdit = () => {
-    console.log("Editting");
-
     if (!title || !description) {
-      setErrors({ ...errors, title: !title, description: !description, type: !type });
+      setErrors({ ...errors, title: !title, description: !description });
     } else if (onEditResource) {
       onEditResource(title, description, file, link);
-      console.log("Resource edited successfully");
-      onClose();
+      onClose(); // Close the modal after editing the resource
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
+      console.log(e.target.files[0])
       setErrors({ ...errors, file: false });
     } else {
       setFile(null);

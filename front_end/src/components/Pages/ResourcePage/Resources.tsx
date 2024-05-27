@@ -28,6 +28,7 @@ import {
   SideMenu
 } from "../styles/ResourcePageStyles";
 import { Button } from "../../shared-styles";
+import { CreateResourceDTO } from "shared-nextdoor-education/dist/create-resource.dto";
 
 interface MenuItemType {
   text: string;
@@ -75,27 +76,29 @@ const Resources = () => {
   const handleAddResource = (title, description, type, file, link) => {
     setUploadingResourceName(title);
     setIsUploadNotificationOpen(true);
+    const resourceType = type;
 
     const resource = {
       title,
       description,
-      resourceType: type,
-      file: file ? file.name : link
+      resourceType,
+      file
     };
-
     dispatch(addResource({ teacherId, resource }));
   };
 
   const handleEditResource = (title, description, file, link) => {
     if (selectedResourceIndex !== null) {
+      const resourceId = resources[selectedResourceIndex].id;
+      const resourceType = resources[selectedResourceIndex].resourceType.type;
       const updatedResource = {
-        ...resources[selectedResourceIndex],
         title,
         description,
-        file: file ? file.name : link
+        file: file,
+        resourceType
       };
 
-      // dispatch(updateResource({ id: updatedResource.id, resource: updatedResource }));
+      dispatch(updateResource({ resourceId, resource: updatedResource }));
     }
   };
 
@@ -182,9 +185,11 @@ const Resources = () => {
             id={resource.id}
             title={highlightText(resource.title)}
             description={highlightText(resource.description)}
-            type={resource.type}
+            resourceType={resource.resourceType} // Use resourceType instead of type
+            createdAt={resource.createdAt}
+            lastUpdated={resource.lastUpdated}
             onDelete={() => handleDeleteResource(resource.id)}
-            onEdit={() => handleEditButtonClick(index)}
+            onEdit={() => handleEditButtonClick(index)} // Pass the handleEditButtonClick function
           />
         ))}
       </MainContent>

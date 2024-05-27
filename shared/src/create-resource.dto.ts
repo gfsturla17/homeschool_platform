@@ -9,7 +9,4 @@ export class CreateResourceDTO {
 
   @IsString()
   resourceType: string;
-
-  @IsString()
-  file: string;
 }

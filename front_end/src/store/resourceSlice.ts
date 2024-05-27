@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from 'axios';
+import { ResourceDTO } from "shared-nextdoor-education/dist/resource/resource.dto";
 
 interface ResourceState {
   resources: any[];
@@ -13,11 +14,12 @@ const initialState: ResourceState = {
   isLoading: false,
 };
 
-export const getResources = createAsyncThunk(
+export const getResources = createAsyncThunk<ResourceDTO[], number, { rejectValue: unknown }>(
   'resource/getResources',
   async (teacherId: number, { rejectWithValue }) => {
     try {
       const response = await axios.get(`http://127.0.0.1:3000/resources/teacher/${teacherId}`);
+      console.log(response)
 
       return response.data;
     } catch (error: any) {
@@ -30,15 +32,33 @@ export const addResource = createAsyncThunk(
   'resource/addResource',
   async ({ teacherId, resource }: { teacherId: number, resource: any }, { rejectWithValue }) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      const response = await axios.post(`http://127.0.0.1:3000/resources/teacher/${teacherId}`, resource);
+      const formData = new FormData();
+      formData.append('title', resource.title);
+      formData.append('description', resource.description);
+      formData.append('resourceType', resource.resourceType); // Ensure resourceType is a string
 
+      console.log("File", resource.file)
+      if (resource.file instanceof File) {
+        console.log("Is File", resource.file)
+        formData.append('file', resource.file);
+      } else if (resource.link) {
+        formData.append('link', resource.link);
+      }
+
+      const response = await axios.post(`http://127.0.0.1:3000/resources/teacher/${teacherId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log(response)
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
     }
   }
 );
+
 
 export const updateResource = createAsyncThunk(
   'resource/updateResource',
@@ -103,7 +123,7 @@ const resourceSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(updateResource.fulfilled, (state, action) => {
-      state.resources = state.resources.map((resource) => resource.id === action.payload.id ? action.payload : resource);
+      state.resources = state.resources.map((resource) => resource.id === action.payload.id ? { ...resource, ...action.payload } : resource);
       state.error = null;
       state.isLoading = false;
     });

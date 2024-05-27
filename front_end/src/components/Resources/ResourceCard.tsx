@@ -9,22 +9,24 @@ import {
   ResourceCardContainer,
   ViewButton
 } from "./styles/ResourceCardStyles";
+import { ResourceTypeDTO } from "shared-nextdoor-education/dist/resource/resource.dto";
 
 interface ResourceCardProps {
   id: any;
   title: ReactNode;
   description: ReactNode;
-  type: string;
+  resourceType: ResourceTypeDTO;
+  createdAt: Date;
+  lastUpdated: Date;
   onDelete: () => void;
-  onEdit: (title: string, description: string, file?: File, link?: string) => void;
+  onEdit: () => void;
 }
 
-const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, type, onDelete, onEdit }) => {
+const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, resourceType, createdAt, lastUpdated, onDelete, onEdit }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const getIcon = () => {
-    switch (type) {
+    switch (resourceType.type) {
       case 'Video':
         return <FaVideo />;
       case 'eBooks':
@@ -45,22 +47,19 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, typ
     setIsDeleteModalOpen(false);
   };
 
-  const handleEdit = (title: string, description: string, file?: File, link?: string) => {
-    onEdit(title, description, file, link);
-    setIsEditModalOpen(false);
-  };
-
   return (
     <ResourceCardContainer>
       <IconContainer>{getIcon()}</IconContainer>
       <InfoContainer>
         <h3>{title}</h3>
         <p>{description}</p>
-        <p>Type: {type}</p>
+        <p>Type: {resourceType.type}</p>
+        <p>Created: {new Date(createdAt).toLocaleDateString()}</p>
+        <p>Last Updated: {new Date(lastUpdated).toLocaleDateString()}</p>
       </InfoContainer>
       <ButtonContainer>
         <ViewButton>View</ViewButton>
-        <EditButton onClick={() => setIsEditModalOpen(true)}>Edit</EditButton>
+        <EditButton onClick={() => onEdit()}>Edit</EditButton>
         <DeleteButton onClick={() => setIsDeleteModalOpen(true)}>Delete</DeleteButton>
       </ButtonContainer>
       {isDeleteModalOpen && (
@@ -73,19 +72,16 @@ const ResourceCard: React.FC<ResourceCardProps> = ({ id, title, description, typ
           </ModalContainer>
         </ModalBackground>
       )}
-      {isEditModalOpen && (
-        <AddResourceModal
-          onClose={() => setIsEditModalOpen(false)}
-          onEditResource={handleEdit}
-          initialTitle={title.toString()}
-          initialDescription={description.toString()}
-          initialType={type}
-          buttonText="Save Changes"
-          isEditMode={true}
-        />
-      )}
     </ResourceCardContainer>
   );
+};
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 };
 
 export default ResourceCard;
