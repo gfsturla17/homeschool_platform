@@ -1,25 +1,26 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { LoginResponseDTO } from "shared-nextdoor-education/dist/login-response-dto";
 import { AppDispatch } from "./store";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 interface AuthState {
   token: string | null;
-  firstName: string | null; // Add this line
-  id: number | null; // Add this line
+  firstName: string | null;
+  id: number | null;
+  role: string | null; // Add this line
 }
 
 const initialState: AuthState = {
   token: localStorage.getItem('token'),
-  firstName: localStorage.getItem('userName'),
-  id: parseInt(localStorage.getItem('teacher_id') || '0', 10) || null
+  firstName: localStorage.getItem('firstName'),
+  id: parseInt(localStorage.getItem('teacher_id') || '0', 10) || null,
+  role: localStorage.getItem('role'), // Add this line
 };
 
 export const login = createAsyncThunk(
   'auth/login',
-  async (credentials: { email: string; password: string }) => {
-    const response = await axios.post('http://localhost:3000/teacher/login', credentials);
-    return { token: response.data.token, firstName: response.data.firstName, id:response.data.id };
+  async (credentials: { email: string; password: string, role: string }) => {
+    const response = await axios.post('http://localhost:3000/auth/login', credentials);
+    return { token: response.data.token, firstName: response.data.firstName, id: response.data.id, role: response.data.role };
   }
 );
 
@@ -36,24 +37,29 @@ const authSlice = createSlice({
   reducers: {
     rehydrate(state) {
       state.id = parseInt(localStorage.getItem('teacher_id') || '0', 10) || null;
+      state.role = localStorage.getItem('role'); // Add this line
     }
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
       state.token = action.payload.token;
       state.firstName = action.payload.firstName;
-      state.id = action.payload.id
-      localStorage.setItem('token', action.payload.token); // Set token in local storage
-      localStorage.setItem('firstName', action.payload.firstName); // Set userName in local storage
-      localStorage.setItem('teacher_id', String(action.payload.id)); // Set userName in local storage
+      state.id = action.payload.id;
+      state.role = action.payload.role; // Add this line
+      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('firstName', action.payload.firstName);
+      localStorage.setItem('teacher_id', String(action.payload.id));
+      localStorage.setItem('role', action.payload.role); // Add this line
     });
     builder.addCase(logout.fulfilled, (state) => {
       state.token = null;
       state.firstName = null;
-      state.id = null
-      localStorage.removeItem('token'); // Remove token from local storage on logout
-      localStorage.removeItem('firstName'); // Remove userName from local storage on logout
-      localStorage.removeItem('teacher_id'); // Remove userName from local storage on logout
+      state.id = null;
+      state.role = null; // Add this line
+      localStorage.removeItem('token');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('teacher_id');
+      localStorage.removeItem('role'); // Add this line
     });
   },
 });

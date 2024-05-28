@@ -103,27 +103,29 @@ Content-Type: application/json
 }
 
 ### Add a Resource for a Teacher with File
+### Add a Resource for a Teacher with File
 POST http://localhost:3000/resources/teacher/47
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Type: multipart/form-data
 
-------WebKitFormBoundary7MA4YWxkTrZu0gW
+--boundary
 Content-Disposition: form-data; name="title"
 
 Sample Resource Title
-------WebKitFormBoundary7MA4YWxkTrZu0gW
+--boundary
 Content-Disposition: form-data; name="description"
 
 This is a sample resource description.
-------WebKitFormBoundary7MA4YWxkTrZu0gW
+--boundary
 Content-Disposition: form-data; name="resourceType"
 
 Video
-------WebKitFormBoundary7MA4YWxkTrZu0gW
+--boundary
 Content-Disposition: form-data; name="file"; filename="sample.txt"
 Content-Type: text/plain
 
 This is the content of the sample text file.
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
+--boundary--
+
 
 
 

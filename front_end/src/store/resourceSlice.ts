@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from 'axios';
+
 import { ResourceDTO } from "shared-nextdoor-education/dist/resource/resource.dto";
+import axiosInstance from "../axios/axios";
 
 interface ResourceState {
   resources: any[];
@@ -19,8 +21,6 @@ export const getResources = createAsyncThunk<ResourceDTO[], number, { rejectValu
   async (teacherId: number, { rejectWithValue }) => {
     try {
       const response = await axios.get(`http://127.0.0.1:3000/resources/teacher/${teacherId}`);
-      console.log(response)
-
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -37,21 +37,18 @@ export const addResource = createAsyncThunk(
       formData.append('description', resource.description);
       formData.append('resourceType', resource.resourceType); // Ensure resourceType is a string
 
-      console.log("File", resource.file)
       if (resource.file instanceof File) {
-        console.log("Is File", resource.file)
         formData.append('file', resource.file);
       } else if (resource.link) {
         formData.append('link', resource.link);
       }
 
-      const response = await axios.post(`http://127.0.0.1:3000/resources/teacher/${teacherId}`, formData, {
+      const response = await axiosInstance.post(`http://127.0.0.1:3000/resources/teacher/${teacherId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      console.log(response)
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);

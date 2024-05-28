@@ -1,3 +1,4 @@
+//ResourceCardStyles
 import styled from "styled-components";
 
 export const ResourceCardContainer = styled.div`
