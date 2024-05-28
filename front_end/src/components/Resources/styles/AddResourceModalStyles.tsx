@@ -1,5 +1,5 @@
+//AddResourceModalStyles
 import styled from "styled-components";
-
 export const Input = styled.input<{ hasError: boolean }>`
     width: calc(100% - 20px);  /* Adjust width to fit within padding */
     padding: 10px;

@@ -61,7 +61,8 @@ function LoginFormFields(props: LoginFormFieldsProps) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const credentials = { email: username, password };
+    const role = props.isTeacher ? 'teacher' : 'student'; // or whatever the default role is
+    const credentials = { email: username, password, role };
     dispatch(login(credentials)).unwrap().then(() => {
       navigate('/resources'); // or any other route you want to navigate to
     });
