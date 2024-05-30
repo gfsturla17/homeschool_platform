@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { FaVideo, FaBook, FaFile, FaClipboard, FaLink } from "react-icons/fa";
-import { ModalBackground, ModalContainer, CloseIcon, Button } from "../shared-styles";
+import { ModalBackground, ModalContainer, CloseIcon, Button } from "../Common/styles/shared-styles";
 import AddResourceModal from "./AddResourceModal";
 import {
   ButtonContainer, DeleteButton, EditButton,

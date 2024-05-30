@@ -1,5 +1,5 @@
 import React from 'react';
-import './TeacherDashboard.css';
+import './styles/TeacherDashboard.css';
 import { FaChalkboardTeacher, FaClipboardList, FaBook, FaEnvelope, FaUser } from 'react-icons/fa';
 
 interface Profile {

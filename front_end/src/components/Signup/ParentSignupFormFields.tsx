@@ -1,36 +1,6 @@
 // ParentSignupFormFields
 import React, { useState } from 'react';
-import styled from 'styled-components';
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border-radius: 10px;
-`;
-
-const Input = styled.input`
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-`;
-
-const ErrorMessage = styled.p`
-    color: red;
-    white-space: pre-wrap;
-`;
-
-const SubmitButton = styled.button`
-    background-color: #28a745;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-`;
+import { ErrorMessage, Form, Input, SubmitButton } from "./styles/ParentSignupFormFieldsStyles";
 
 interface ParentSignupFormFieldsProps {
   onSubmit: (userRegistration: any) => void;

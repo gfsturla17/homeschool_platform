@@ -3,18 +3,17 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from './styles/GlobalStyle';
 import { lightTheme, darkTheme } from './styles/theme';
-import LandingPage from './components/LandingPage';
-import CompleteProfileForm from './components/CompleteProfileForm';
+import LandingPage from './components/Pages/LandingPage/LandingPage';
+import CompleteProfileForm from './components/Pages/CompleteProfilePage/CompleteProfileForm';
 import Resources from "./components/Pages/ResourcePage/Resources";
-import Home from "./components/Home";
-import Header from "./components/Header";
+import Header from "./components/Layout/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./store/store";
-import ProfileSettings from "./components/ProfileSettings";
+import ProfileSettings from "./components/Pages/ProfileSettingsPage/ProfileSettings";
 import { ToastContainer } from "react-toastify";
-import TeacherDashboard from "./components/TeacherDashboard";
+import TeacherDashboard from "./components/Pages/TeacherDashboardPage/TeacherDashboard";
 import { rehydrateAuth } from "./store/authSlice";
 
 function App() {

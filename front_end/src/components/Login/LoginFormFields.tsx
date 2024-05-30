@@ -1,51 +1,12 @@
 // LoginFormFields
 import React, { useState } from 'react';
 import axios from "axios";
-import { login } from "../store/authSlice";
+import { login } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
+import { AppDispatch } from "../../store/store";
 import styled from 'styled-components';
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border-radius: 10px;
-`;
-
-const Input = styled.input`
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-`;
-
-const ForgotPasswordText = styled.p`
-    color: #87CEEB;
-    margin-bottom: 10px;
-`;
-
-const SubmitButton = styled.button`
-    background-color: #28a745;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-`;
-
-const ToggleSignupButton = styled.button`
-    background-color: #0070e0;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-`;
+import { ForgotPasswordText, Form, Input, SubmitButton, ToggleSignupButton } from "./styles/LoginFormFieldsStyles";
 
 interface LoginFormFieldsProps {
   onSubmit: (event: any) => void;

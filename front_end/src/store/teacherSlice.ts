@@ -19,9 +19,9 @@ const initialState: TeacherState = {
 
 export const registerTeacher = createAsyncThunk(
   'teacher/registerTeacher',
-  async (teacherSignUpDTO: any, { rejectWithValue }) => {
+  async (registerTeacherDTO: any, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://127.0.0.1:3000/teacher/signup', teacherSignUpDTO);
+      const response = await axios.post('http://127.0.0.1:3000/teacher/signup', registerTeacherDTO);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
