@@ -13,6 +13,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwn1o-TzQ0oc39YmmhdmM4dukkT9RUXNg&libraries=places"></script>
     <Provider store={store}>
       <ToastContainer />
       <App />

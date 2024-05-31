@@ -44,3 +44,29 @@ export const Button = styled.button<{
         background-color: ${props => props.variant === 'save' ? '#2980b9' : props.variant === 'delete' ? '#c0392b' : '#45A049'};
     }
 `;
+
+export const Input = styled.input`
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+`;
+
+export const Button_another = styled.button`
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+`;
+
+export const Form = styled.form`
+  width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;

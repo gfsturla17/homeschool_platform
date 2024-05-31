@@ -1,60 +1,76 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '../../../store/store';
-import { getTeacherProfile } from '../../../store/teacherSlice';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import { ProfileButton, ProfileForm, ProfileInput } from "../styles/CompleteProfilePageStyles";
+import useLoadScript from "../../../UseLoadScript";
+import { googleMapsApiKey, googleMapsApiUrl } from "../../../env";
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
-const CompleteProfileForm: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const teacherId = useSelector((state: RootState) => state.teacher.id);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
-    const [biography, setBiography] = useState('');
-    const [profilePictureUrl, setProfilePictureUrl] = useState('');
-    const [socialMediaLinks, setSocialMediaLinks] = useState('');
+// Set the API key globally
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        const updateTeacherProfileRequestDTO = {
-            firstName,
-            lastName,
-            address,
-            city,
-            state,
-            biography,
-            profilePictureUrl,
-            socialMediaLinks,
-        };
 
-        axios.put(`http://127.0.0.1:3000/teachers/${teacherId}/profile`, updateTeacherProfileRequestDTO)
-          .then((response) => {
-              if (response.status === 200) {
-                  toast.success('Profile updated successfully!');
-              }
-          })
-          .catch((error) => {
-              toast.error('Error updating profile!');
-          });
-    };
+const CompleteProfilePage = () => {
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
 
-    return (
-      <form onSubmit={handleSubmit} className="form">
-          <h2>Complete Your Profile</h2>
-          <input type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} placeholder="First Name" className="form-input" />
-          <input type="text" value={lastName} onChange={(event) => setLastName(event.target.value)} placeholder="Last Name" className="form-input" />
-          <input type="text" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Address" className="form-input" />
-          <input type="text" value={city} onChange={(event) => setCity(event.target.value)} placeholder="City" className="form-input" />
-          <input type="text" value={state} onChange={(event) => setState(event.target.value)} placeholder="State" className="form-input" />
-          <textarea value={biography} onChange={(event) => setBiography(event.target.value)} placeholder="Biography" className="form-textarea" />
-          <input type="text" value={profilePictureUrl} onChange={(event) => setProfilePictureUrl(event.target.value)} placeholder="Profile Picture URL" className="form-input" />
-          <input type="text" value={socialMediaLinks} onChange={(event) => setSocialMediaLinks(event.target.value)} placeholder="Social Media Links" className="form-input" />
-          <button type="submit" className="submit-button">Update Profile</button>
-      </form>
-    );
+  const handleSelect = async (address) => {
+    const results = await geocodeByAddress(address);
+    const latLng = await getLatLng(results[0]);
+    setAddress(address);
+    setCity(results[0].address_components[1].long_name);
+    setState(results[0].address_components[3].short_name);
+  };
+
+
+  const scriptLoaded = useLoadScript(`https://maps.googleapis.com/maps/api/js?key=AIzaSyDDbM5Eyj3K6fqLPKBtrHPaQrekhwuzNA4&libraries=places`);
+
+  return (
+    <ProfileForm>
+      {scriptLoaded ? (
+        <PlacesAutocomplete
+          value={address}
+          onChange={setAddress}
+          onSelect={handleSelect}
+        >
+          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+            <div>
+              <ProfileInput
+                {...getInputProps({
+                  placeholder: 'Search Places ...',
+                  className: 'location-search-input',
+                })}
+              />
+              <div className="autocomplete-dropdown-container">
+                {loading && <div>Loading...</div>}
+                {suggestions.map((suggestion) => {
+                  const className = suggestion.active
+                    ? 'suggestion-item--active'
+                    : 'suggestion-item';
+                  const style = suggestion.active
+                    ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                    : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                  return (
+                    <div
+                      {...getSuggestionItemProps(suggestion, {
+                        className,
+                        style,
+                      })}
+                    >
+                      <span>{suggestion.description}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </PlacesAutocomplete>
+      ) : (
+        <div>Loading Google Maps...</div>
+      )}
+      <ProfileInput value={city} onChange={(e) => setCity(e.target.value)} />
+      <ProfileInput value={state} onChange={(e) => setState(e.target.value)} />
+      <ProfileButton type="submit">Complete Profile</ProfileButton>
+    </ProfileForm>
+  );
 };
 
-export default CompleteProfileForm;
+export default CompleteProfilePage;

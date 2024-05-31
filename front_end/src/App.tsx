@@ -33,6 +33,7 @@ function App() {
         <BrowserRouter>
           <ToastContainer />
           <Header />
+          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwn1o-TzQ0oc39YmmhdmM4dukkT9RUXNg}&libraries=places"></script>
           <Routes>
             <Route path="/" element={isLoggedIn ? <Navigate to="/home" replace={true} /> : <LandingPage />} />
             <Route element={<ProtectedRoute />}>
