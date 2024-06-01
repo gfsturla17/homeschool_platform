@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { googleMapsApiUrl } from "./env";
 
 const useLoadScript = (url) => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
@@ -8,6 +9,7 @@ const useLoadScript = (url) => {
     script.src = url;
     script.async = true;
     script.defer = true;
+    console.log(googleMapsApiUrl)
 
     script.onload = () => {
       setScriptLoaded(true);

@@ -52,15 +52,6 @@ export const Input = styled.input`
     width: 100%;
 `;
 
-export const Button_another = styled.button`
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: #fff;
-    cursor: pointer;
-`;
-
 export const Form = styled.form`
   width: 500px;
   margin: 0 auto;
