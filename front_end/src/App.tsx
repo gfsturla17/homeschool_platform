@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from 'styled-components';
-import GlobalStyle from './styles/GlobalStyle';
-import { lightTheme, darkTheme } from './styles/theme';
+import { lightTheme} from './styles/theme';
 import LandingPage from './components/Pages/LandingPage/LandingPage';
 import CompleteProfileForm from './components/Pages/CompleteProfilePage/CompleteProfileForm';
 import Resources from "./components/Pages/ResourcePage/Resources";
@@ -17,7 +16,7 @@ import TeacherDashboard from "./components/Pages/TeacherDashboardPage/TeacherDas
 import { rehydrateAuth } from "./store/authSlice";
 
 function App() {
-  const [theme, setTheme] = useState(lightTheme);
+  const [theme] = useState(lightTheme);
   Modal.setAppElement('#root');
   const isLoggedIn = useSelector((state: RootState) => state.auth.token !== null);
   const dispatch = useDispatch<AppDispatch>();
@@ -29,7 +28,6 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <>
-        <GlobalStyle />
         <BrowserRouter>
           <ToastContainer />
           <Header />

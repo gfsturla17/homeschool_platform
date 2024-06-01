@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import {
   AutocompleteDropdownContainer,
   ProfileForm,
-  SuggestionItem
+  SuggestionItem,
+  AutocompleteContainer
 } from "../styles/CompleteProfilePageStyles";
-import useLoadScript from "../../../UseLoadScript";
+import useLoadScript from "../../../helpers/UseLoadScript";
 import { googleMapsApiKey, googleMapsApiUrl } from "../../../env";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import SubmitButton from "../../Common/SubmitButton";
@@ -30,6 +31,7 @@ const CompleteProfilePage = () => {
   }, [googleMapsApiKey]);
 
   const handleSelect = async (address) => {
+    console.log("Selected address:", address);
     const results = await geocodeByAddress(address);
     const latLng = await getLatLng(results[0]);
     setAddress(address);
@@ -38,12 +40,12 @@ const CompleteProfilePage = () => {
     setState(results[0].address_components[3].short_name);
   };
 
-
   const scriptLoaded = useLoadScript(scriptUrl);
+
   return (
     <div>
       <h1>Complete Profile</h1>
-      <ProfileForm style={{ marginTop: '20px' }}>
+      <ProfileForm>
         {scriptLoaded ? (
           <PlacesAutocomplete
             value={address}
@@ -51,23 +53,25 @@ const CompleteProfilePage = () => {
             onSelect={handleSelect}
           >
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-              <div>
+              <AutocompleteContainer>
                 <h2>Address Section</h2>
                 <LabeledTextInput
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Search Places..."
+                  {...getInputProps({
+                    placeholder: 'Search Places...',
+                    className: 'location-search-input',
+                  })}
                 />
-                {suggestions.length > 0 && ( // Conditionally render the dropdown container
+                {suggestions.length > 0 && (
                   <AutocompleteDropdownContainer>
                     {loading && <div>Loading...</div>}
                     {suggestions.map((suggestion, index) => {
-                      const { key, ...rest } = getSuggestionItemProps(suggestion); // Destructure the key prop
+                      const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item';
+                      const style = suggestion.active ? { backgroundColor: '#fafafa', cursor: 'pointer' } : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                      const { key, ...rest } = getSuggestionItemProps(suggestion);
+
                       return (
-                        <SuggestionItem key={suggestion.placeId || index}>
-                          <div
-                            {...rest} // Spread the rest of the props
-                          >
+                        <SuggestionItem key={suggestion.placeId || index} className={className}>
+                          <div {...rest}>
                             <span>{suggestion.description}</span>
                           </div>
                         </SuggestionItem>
@@ -75,14 +79,14 @@ const CompleteProfilePage = () => {
                     })}
                   </AutocompleteDropdownContainer>
                 )}
-                <LabeledTextInput value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
-                <LabeledTextInput value={state} onChange={(e) => setState(e.target.value)} placeholder="State" />
-              </div>
+              </AutocompleteContainer>
             )}
           </PlacesAutocomplete>
         ) : (
           <div>Loading Google Maps...</div>
         )}
+        <LabeledTextInput value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
+        <LabeledTextInput value={state} onChange={(e) => setState(e.target.value)} placeholder="State" />
         <h2>Biography Section</h2>
         <LabeledTextInput value={biography} onChange={(e) => setBiography(e.target.value)} placeholder="Biography" />
         <LabeledTextInput value={profilePictureUrl} onChange={(e) => setProfilePictureUrl(e.target.value)} placeholder="Profile Picture URL" />
@@ -91,13 +95,12 @@ const CompleteProfilePage = () => {
         <LabeledTextInput value={twitterLink} onChange={(e) => setTwitterLink(e.target.value)} placeholder="Twitter Link" />
         <LabeledTextInput value={facebookLink} onChange={(e) => setFacebookLink(e.target.value)} placeholder="Facebook Link" />
         <LabeledTextInput value={instagramLink} onChange={(e) => setInstagramLink(e.target.value)} placeholder="Instagram Link" />
-        <FlexContainer justifyContent="flex-end">
+        <FlexContainer justifycontent="flex-end">
           <SubmitButton type="submit">Complete Profile</SubmitButton>
         </FlexContainer>
       </ProfileForm>
     </div>
   );
-
 };
 
 export default CompleteProfilePage;
