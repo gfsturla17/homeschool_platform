@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 interface Props {
-  justifyContent?: string;
+  justifycontent?: string;
   alignItems?: string;
 }
 
 const FlexContainer = styled.div<Props>`
   display: flex;
-  justify-content: ${({ justifyContent }) => justifyContent || 'flex-start'};
+  justify-content: ${({ justifycontent }) => justifycontent || 'flex-start'};
   align-items: ${({ alignItems }) => alignItems || 'flex-start'};
 `;
 

@@ -1,13 +1,8 @@
 import styled from 'styled-components';
-import { Button, Form, Input } from "../../Common/styles/shared-styles";
-
+import { Form } from "../../Common/styles/shared-styles";
 
 export const ProfileForm = styled(Form)`
     margin-top: 50px;
-`;
-
-export const ProfileButton = styled(Button)`
-    margin-top: 20px;
 `;
 
 export const AutocompleteDropdownContainer = styled.div`
@@ -20,6 +15,7 @@ export const AutocompleteDropdownContainer = styled.div`
     border-radius: 5px;
     padding: 10px;
     z-index: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const SuggestionItem = styled.div`
@@ -35,4 +31,8 @@ export const SuggestionItem = styled.div`
     &.suggestion-item--active {
         background-color: #f0f0f0;
     }
+`;
+
+export const AutocompleteContainer = styled.div`
+    position: relative;
 `;
