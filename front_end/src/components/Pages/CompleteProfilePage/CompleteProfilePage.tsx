@@ -22,8 +22,10 @@ const CompleteProfilePage = () => {
   const [lastName, setLastName] = useState('');
   const [profilePictureUrl, setProfilePictureUrl] = useState('');
   const [address, setAddress] = useState('');
+  const [originalAddress, setOriginalAddress] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
+  const [zipCode, setZipCode] = useState('');
   const [biography, setBiography] = useState('');
   const [tiktokLink, setTiktokLink] = useState('');
   const [twitterLink, setTwitterLink] = useState('');
@@ -37,14 +39,18 @@ const CompleteProfilePage = () => {
     }
   }, [googleMapsApiKey]);
 
-  const handleSelect = async (address) => {
-    console.log("Selected address:", address);
-    const results = await geocodeByAddress(address);
-    const latLng = await getLatLng(results[0]);
-    setAddress(address);
+  const handleSelect = async (address: string) => {
+    setOriginalAddress(address);
 
-    setCity(results[0].address_components[1].long_name);
-    setState(results[0].address_components[3].short_name);
+    const results = await geocodeByAddress(address);
+    const addressComponents = results[0].address_components;
+    const streetNumber = addressComponents.find((component) => component.types.includes('street_number'));
+    const street = addressComponents.find((component) => component.types.includes('route'));
+
+    const streetAddress = `${streetNumber?.long_name || ''} ${street?.long_name || ''}`.trim();
+    setAddress(streetAddress);
+    setCity(addressComponents.find((component) => component.types.includes('locality'))?.long_name || '');
+    setState(addressComponents.find((component) => component.types.includes('administrative_area_level_1'))?.short_name || '');
   };
 
   const onNext = () => {
@@ -81,11 +87,14 @@ const CompleteProfilePage = () => {
         address: address,
         city: city,
         state: state,
+        zipCode: zipCode,
         scriptLoaded: scriptLoaded,
         setAddress: setAddress,
         setCity: setCity,
         setState: setState,
-        handleSelect: handleSelect
+        setZipCode: setZipCode,
+        handleSelect: handleSelect,
+        originalAddress: originalAddress
       }
     },
     {
