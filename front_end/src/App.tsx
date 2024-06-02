@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from 'styled-components';
 import { lightTheme} from './styles/theme';
 import LandingPage from './components/Pages/LandingPage/LandingPage';
-import CompleteProfileForm from './components/Pages/CompleteProfilePage/CompleteProfileForm';
+import CompleteProfileForm from './components/Pages/CompleteProfilePage/CompleteProfilePage';
 import Resources from "./components/Pages/ResourcePage/Resources";
 import Header from "./components/Layout/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
