@@ -1,39 +1,36 @@
-import { IsEmail, IsString } from "class-validator";
+import { IsEmail, IsOptional, IsString } from "class-validator";
 
 export class UpdateTeacherProfileRequestDTO {
   @IsString()
-  firstName!: string;
+  firstName: string = '';
 
   @IsString()
-  lastName!: string;
-
-  @IsEmail()
-  email!: string;
+  lastName: string = '';
 
   @IsString()
-  phone!: string;
+  phone: string = '';
 
   @IsString()
-  address!: string;
+  address: string = '';
 
   @IsString()
-  city!: string;
+  city: string = '';
 
   @IsString()
-  state!: string;
+  state: string = '';
 
   @IsString()
-  biography!: string;
+  biography: string = '';
 
   @IsString()
-  tiktokLink!: string;
+  tiktokLink: string = '';
 
   @IsString()
-  twitterLink!: string;
+  twitterLink: string = '';
 
   @IsString()
-  facebookLink!: string;
+  facebookLink: string = '';
 
   @IsString()
-  instagramLink!: string;
+  instagramLink: string = '';
 }

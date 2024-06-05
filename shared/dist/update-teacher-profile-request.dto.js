@@ -12,6 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateTeacherProfileRequestDTO = void 0;
 const class_validator_1 = require("class-validator");
 class UpdateTeacherProfileRequestDTO {
+    constructor() {
+        this.firstName = '';
+        this.lastName = '';
+        this.phone = '';
+        this.address = '';
+        this.city = '';
+        this.state = '';
+        this.biography = '';
+        this.tiktokLink = '';
+        this.twitterLink = '';
+        this.facebookLink = '';
+        this.instagramLink = '';
+    }
 }
 exports.UpdateTeacherProfileRequestDTO = UpdateTeacherProfileRequestDTO;
 __decorate([
@@ -22,10 +35,6 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateTeacherProfileRequestDTO.prototype, "lastName", void 0);
-__decorate([
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], UpdateTeacherProfileRequestDTO.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

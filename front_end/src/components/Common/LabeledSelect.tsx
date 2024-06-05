@@ -12,8 +12,8 @@ interface Props {
 const Container = styled.div`
     position: relative;
     width: 80%;
-    padding: 0;
     margin: 20px auto;
+    padding: 16px 0; // Add padding to match the LabeledTextInput
 `;
 
 const LabeledSelect: React.FC<Props> = ({ options, value, onChange, placeholder }) => {
@@ -34,6 +34,14 @@ const LabeledSelect: React.FC<Props> = ({ options, value, onChange, placeholder 
             width: '100%',
             padding: '0',
             border: 'none',
+          }),
+          control: (provided) => ({
+            ...provided,
+            height: '40px', // Set the height to 40px to match the LabeledTextInput
+            width: '100%', // Set the width to 100% to match the LabeledTextInput
+            padding: '0 12px', // Adjust the padding to match the LabeledTextInput
+            border: '1px solid #ccc',
+            borderRadius: '5px',
           }),
         }}
       />

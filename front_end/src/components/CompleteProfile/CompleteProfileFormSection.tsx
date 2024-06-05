@@ -32,7 +32,7 @@ const CompleteProfileFormSection = ({ title, children, onPrevious, onNext, onSki
         {onPrevious && <NavigationControlButton type="button" onClick={onPrevious}>Previous</NavigationControlButton>}
         <div style={{ flex: 1 }} />
         {isLastStep ? (
-          <SubmitButton type="submit">Complete Profile</SubmitButton>
+          <SubmitButton type="button" onClick={onNext}>Complete Profile</SubmitButton>
         ) : (
           <NavigationControlButton type="button" onClick={onNext}>Next</NavigationControlButton>
         )}

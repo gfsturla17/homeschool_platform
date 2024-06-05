@@ -1,7 +1,6 @@
 import { AppDispatch } from "./store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { registerTeacher } from "./teacherSlice";
 
 interface AuthState {
   token: string | null;

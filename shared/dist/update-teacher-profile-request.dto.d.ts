@@ -1,7 +1,6 @@
 export declare class UpdateTeacherProfileRequestDTO {
     firstName: string;
     lastName: string;
-    email: string;
     phone: string;
     address: string;
     city: string;

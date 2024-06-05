@@ -4,14 +4,12 @@ import TeacherProfile from "../models/TeacherProfile";
 import { UpdateTeacherProfileRequestDTO } from "shared-nextdoor-education/dist/update-teacher-profile-request.dto";
 
 interface TeacherState {
-  isRegistered: boolean;
   error: string | null;
   id: string | null;
   profile: any;
 }
 
 const initialState: TeacherState = {
-  isRegistered: false,
   error: null,
   id: null,
   profile: null,
@@ -31,9 +29,14 @@ export const registerTeacher = createAsyncThunk(
 
 export const updateTeacherProfileAction = createAsyncThunk(
   'teacher/updateProfile',
-  async ({ id, profile }: { id: string; profile: UpdateTeacherProfileRequestDTO }, { rejectWithValue }) => {
+  async ({ id, profile }: { id: number; profile: UpdateTeacherProfileRequestDTO }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`http://127.0.0.1:3000/teacher/${id}/profile`, profile);
+      const token = localStorage.getItem('token');
+      const response = await axios.patch(`http://127.0.0.1:3000/teacher/${id}/profile`, profile, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -59,12 +62,10 @@ const teacherSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(registerTeacher.fulfilled, (state, action) => {
-      state.isRegistered = true;
       state.error = null;
       state.id = action.payload.id;
     });
     builder.addCase(registerTeacher.rejected, (state, action: PayloadAction<any>) => {
-      state.isRegistered = false;
       state.error = action.payload.message || action.payload;
     });
     builder.addCase(getTeacherProfile.fulfilled, (state, action) => {

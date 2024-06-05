@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AutocompleteContainer,
   AutocompleteDropdownContainer,
@@ -25,19 +25,19 @@ export interface AddressSectionProps {
   originalAddress: string;
 }
 
-const AddressSection: React.FC<AddressSectionProps> = ({
-                                                         address,
-                                                         setAddress,
-                                                         city,
-                                                         setCity,
-                                                         state,
-                                                         setState,
-                                                         zipCode,
-                                                         setZipCode,
-                                                         scriptLoaded,
-                                                         handleSelect,
-                                                         originalAddress,
-                                                       }) => {
+const AddressSection = ({
+                          address,
+                          setAddress,
+                          city,
+                          setCity,
+                          state,
+                          setState,
+                          zipCode,
+                          setZipCode,
+                          scriptLoaded,
+                          handleSelect,
+                          originalAddress,
+                        }) => {
   const {
     autocompleteRef,
     inputValue,
@@ -45,8 +45,16 @@ const AddressSection: React.FC<AddressSectionProps> = ({
     handleInputChange,
     handleZipCodeChange,
     handleCityChange,
-    handleStateChange
-  } = useAddressHandlers(originalAddress);
+    handleStateChange,
+    handleKeyDown,
+    highlightedSuggestion,
+    setShowAutocomplete,
+  } = useAddressHandlers(originalAddress, setAddress, handleSelect);
+
+  const handleSelectAndClose = (description) => {
+    handleSelect(description);
+    setShowAutocomplete(false);
+  };
 
   return (
     <div>
@@ -54,14 +62,14 @@ const AddressSection: React.FC<AddressSectionProps> = ({
         <PlacesAutocomplete
           value={address}
           onChange={(value) => handleInputChange(value, setAddress)}
-          onSelect={handleSelect}
+          onSelect={handleSelectAndClose}
           searchOptions={{
             types: ['address'],
             componentRestrictions: { country: 'us' },
           }}
         >
           {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-            <AutocompleteContainer ref={autocompleteRef}>
+            <AutocompleteContainer ref={autocompleteRef} onKeyDown={handleKeyDown(suggestions)}>
               <LabeledTextInput
                 {...getInputProps({
                   placeholder: 'Address',
@@ -72,8 +80,8 @@ const AddressSection: React.FC<AddressSectionProps> = ({
                 <AutocompleteDropdownContainer>
                   {loading && <div>Loading...</div>}
                   {suggestions.map((suggestion, index) => {
-                    const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item';
-                    const style = suggestion.active ? { backgroundColor: '#fafafa', cursor: 'pointer' } : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                    const className = highlightedSuggestion === index ? 'suggestion-item--active' : 'suggestion-item';
+                    const style = highlightedSuggestion === index ? { backgroundColor: '#ADD8E6', cursor: 'pointer' } : { backgroundColor: '#ffffff', cursor: 'pointer' };
                     const { key, ...rest } = getSuggestionItemProps(suggestion);
 
                     return (

@@ -13,12 +13,20 @@ import BiographySection, { BiographySectionProps } from "../../CompleteProfile/B
 import SocialMediaSection, { SocialMediaSectionProps } from "../../CompleteProfile/SocialMediaSection";
 import PersonalInformation, { PersonalInformationProps } from "../../CompleteProfile/PersonalInformation";
 import CompleteProfileFormSection, { Section } from "../../CompleteProfile/CompleteProfileFormSection";
+import { UpdateTeacherProfileRequestDTO } from "shared-nextdoor-education/dist/update-teacher-profile-request.dto";
+import { updateTeacherProfileAction } from "../../../store/teacherSlice";
+import { AppDispatch, RootState } from "../../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import ProfilePictureSection from "../../CompleteProfile/ProfilePictureSection";
 
 
 
 const CompleteProfilePage = () => {
   const [step, setStep] = useState(0);
   const [firstName, setFirstName] = useState('');
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [lastName, setLastName] = useState('');
   const [profilePictureUrl, setProfilePictureUrl] = useState('');
   const [address, setAddress] = useState('');
@@ -32,6 +40,11 @@ const CompleteProfilePage = () => {
   const [facebookLink, setFacebookLink] = useState('');
   const [instagramLink, setInstagramLink] = useState('');
   const [scriptUrl, setScriptUrl] = useState('')
+  const [skippedSections, setSkippedSections] = useState<{ [key: string]: boolean }>({});
+  const dispatch: AppDispatch = useDispatch();
+  const teacherId = useSelector((state: RootState) => state.auth.id);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (googleMapsApiKey) {
@@ -61,13 +74,16 @@ const CompleteProfilePage = () => {
     setStep(step - 1);
   };
 
-  const onSkip = () => {};
-
-  const onCompleteProfile = () => {};
-
   const scriptLoaded = useLoadScript(scriptUrl);
-
   const sections: Section[] = [
+    {
+      title: 'Profile Picture',
+      component: ProfilePictureSection,
+      props: {
+        profilePicture: profilePicture,
+        setProfilePicture: setProfilePicture,
+      },
+    },
     {
       title: 'Personal Information',
       component: PersonalInformation,
@@ -120,6 +136,84 @@ const CompleteProfilePage = () => {
       }
     },
   ];
+
+
+  const onCompleteProfile = async () => {
+    try{
+      const profile: UpdateTeacherProfileRequestDTO = {
+        firstName: '',
+        lastName: '',
+        phone: '',
+        address: '',
+        city: '',
+        state: '',
+        biography: '',
+        tiktokLink: '',
+        twitterLink: '',
+        facebookLink: '',
+        instagramLink: '',
+      };
+
+      sections.forEach((section) => {
+        if (!skippedSections[section.title]) {
+          switch (section.title) {
+            case 'Personal Information':
+              profile.firstName = firstName;
+              profile.lastName = lastName;
+              break;
+            case 'Address Section':
+              profile.address = address;
+              profile.city = city;
+              profile.state = state;
+              break;
+            case 'Biography Section':
+              profile.biography = biography;
+              break;
+            case 'Social Media Section':
+              profile.tiktokLink = tiktokLink;
+              profile.twitterLink = twitterLink;
+              profile.facebookLink = facebookLink;
+              profile.instagramLink = instagramLink;
+              break;
+          }
+        }
+      });
+
+      // Dispatch the action with the profile data
+      const result = await dispatch(updateTeacherProfileAction({ id: teacherId, profile }));
+
+      if (updateTeacherProfileAction.fulfilled.match(result)) {
+        navigate('/home'); // Navigate to the TeacherDashboard page
+      } else {
+        toast.error('Failed to update profile', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      toast.error('Failed to update profile', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+  }
+
+  const onSkip = () => {
+    const currentSection = sections[step];
+    setSkippedSections((prevSkippedSections) => ({ ...prevSkippedSections, [currentSection.title]: true }));
+    onNext();
+  };
 
   return (
     <div>
