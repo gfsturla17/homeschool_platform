@@ -27,7 +27,7 @@ import {
   ResourcesContainer, SearchInput, SearchInputContainer,
   SideMenu
 } from "../styles/ResourcePageStyles";
-import { Button } from "../../shared-styles";
+import { Button } from "../../Common/styles/shared-styles";
 import { CreateResourceDTO } from "shared-nextdoor-education/dist/create-resource.dto";
 
 interface MenuItemType {

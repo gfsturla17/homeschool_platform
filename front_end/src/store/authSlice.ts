@@ -24,10 +24,25 @@ export const login = createAsyncThunk(
   }
 );
 
+export const setAuthAfterSignUp = createAsyncThunk(
+  'auth/setAuthAfterSignUp',
+  async (data: any, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('http://127.0.0.1:3000/auth/login', {
+        email: data.email,
+        password: data.password,
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const logout = createAsyncThunk(
   'auth/logout',
   async () => {
-    await axios.post('http://localhost:3000/teacher/logout');
+    await axios.post('http://localhost:3000/auth/logout');
   }
 );
 
@@ -60,6 +75,16 @@ const authSlice = createSlice({
       localStorage.removeItem('firstName');
       localStorage.removeItem('teacher_id');
       localStorage.removeItem('role'); // Add this line
+    });
+    builder.addCase(setAuthAfterSignUp.fulfilled, (state, action) => {
+      state.token = action.payload.token;
+      state.firstName = action.payload.firstName;
+      state.id = action.payload.id;
+      state.role = action.payload.role;
+      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('firstName', action.payload.firstName);
+      localStorage.setItem('teacher_id', String(action.payload.id));
+      localStorage.setItem('role', action.payload.role);
     });
   },
 });

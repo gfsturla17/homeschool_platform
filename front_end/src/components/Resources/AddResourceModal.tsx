@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ModalBackground, ModalContainer, CloseIcon, Button } from '../shared-styles';
+import { ModalBackground, ModalContainer, CloseIcon, Button } from '../Common/styles/shared-styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import {
