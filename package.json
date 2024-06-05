@@ -4,7 +4,7 @@
   "private": true,
   "workspaces": [
     "front_end",
-    "nestjs-backend",
+    "backend",
     "shared"
   ],
   "dependencies": {
