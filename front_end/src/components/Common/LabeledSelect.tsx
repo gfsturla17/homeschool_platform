@@ -37,9 +37,9 @@ const LabeledSelect: React.FC<Props> = ({ options, value, onChange, placeholder 
           }),
           control: (provided) => ({
             ...provided,
-            height: '40px', // Set the height to 40px to match the LabeledTextInput
-            width: '100%', // Set the width to 100% to match the LabeledTextInput
-            padding: '0 12px', // Adjust the padding to match the LabeledTextInput
+            height: '40px',
+            width: '100%',
+            padding: '0 12px',
             border: '1px solid #ccc',
             borderRadius: '5px',
           }),

@@ -3,7 +3,7 @@ import {
   AutocompleteContainer,
   AutocompleteDropdownContainer,
   SuggestionItem
-} from "../Pages/styles/CompleteProfilePageStyles";
+} from "../Pages/CompleteProfilePage/CompleteProfilePageStyles";
 import LabeledTextInput from "../Common/LabeledTextInput";
 import PlacesAutocomplete from "react-places-autocomplete";
 import { STATES } from '../../constants/states';

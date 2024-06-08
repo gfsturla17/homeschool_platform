@@ -14,6 +14,7 @@ import ProfileSettings from "./components/Pages/ProfileSettingsPage/ProfileSetti
 import { ToastContainer } from "react-toastify";
 import TeacherDashboard from "./components/Pages/TeacherDashboardPage/TeacherDashboard";
 import { rehydrateAuth } from "./store/authSlice";
+import TeacherAvailabilityCalendar from "./components/Pages/TeacherAvailabilityPage/TeacherAvailabilityCalendar";
 
 function App() {
   const [theme] = useState(lightTheme);
@@ -36,6 +37,7 @@ function App() {
             <Route path="/" element={isLoggedIn ? <Navigate to="/home" replace={true} /> : <LandingPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/complete-profile" element={<CompleteProfileForm />} />
+              <Route path="/availability" element={<TeacherAvailabilityCalendar />} />
               <Route path="/home" element={<TeacherDashboard />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />

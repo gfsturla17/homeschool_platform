@@ -18,6 +18,10 @@ import { UserModule } from './user/user.module';
 import { AuthGuard } from "./auth/auth.guard";
 import { APP_GUARD } from "@nestjs/core";
 import { RolesGuard } from "./auth/roles.guard";
+import { TeacherAvailabilityModule } from './teacher-availability/teacher-availability.module';
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+
 
 @Module({
   imports: [
@@ -33,6 +37,11 @@ import { RolesGuard } from "./auth/roles.guard";
         },
       }),
     }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+      playground: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -44,7 +53,6 @@ import { RolesGuard } from "./auth/roles.guard";
         database: configService.get<string>('DATABASE_NAME'),
         entities: [__dirname + '/**/*.entity.{js,ts}'],
         synchronize: true,
-        logging: 'all', // Add this line to enable logging
       }),
       inject: [ConfigService],
     }),
@@ -56,6 +64,7 @@ import { RolesGuard } from "./auth/roles.guard";
     AuthModule,
     ResourcesModule,
     UserModule,
+    TeacherAvailabilityModule,
   ],
   controllers: [AppController, TeacherController],
   providers: [
@@ -63,11 +72,11 @@ import { RolesGuard } from "./auth/roles.guard";
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    },{
+    },
+    {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    }
-
+    },
   ],
 })
 export class AppModule implements NestModule {

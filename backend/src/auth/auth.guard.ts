@@ -4,6 +4,7 @@ import { BYPASS_AUTH_KEY } from "./bypass-auth.decorator";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import { JwtService } from "@nestjs/jwt";
+import { GqlExecutionContext } from "@nestjs/graphql";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -15,7 +16,11 @@ export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const isHttp = context.getType() === 'http';
+    const request = isHttp
+      ? context.switchToHttp().getRequest()
+      : GqlExecutionContext.create(context).getContext().req;
+
     const bypassAuth = this.reflector.get<boolean>(BYPASS_AUTH_KEY, context.getHandler());
 
     if (bypassAuth) {

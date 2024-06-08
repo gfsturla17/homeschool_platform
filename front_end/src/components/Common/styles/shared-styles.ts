@@ -10,6 +10,7 @@ export const ModalBackground = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000; /* Add this line */
 `;
 
 export const ModalContainer = styled.div`
@@ -60,4 +61,12 @@ export const Form = styled.form`
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const CalendarContainer = styled.div`
+  height: 700px;
+`;
+
+export const TimePickerContainer = styled.div`
+  width: 25%; // 75% smaller than the original width
 `;

@@ -4,7 +4,7 @@ import {
   ProfileForm,
   SuggestionItem,
   AutocompleteContainer
-} from "../styles/CompleteProfilePageStyles";
+} from "./CompleteProfilePageStyles";
 import useLoadScript from "../../../helpers/UseLoadScript";
 import { googleMapsApiKey, googleMapsApiUrl } from "../../../env";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";

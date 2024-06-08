@@ -1,0 +1,7 @@
+button:hover {
+    font-weight: bold;
+}
+
+.TimePickerColumn div:nth-child(2) {
+    background-color: #f7fbff;
+}

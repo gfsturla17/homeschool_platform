@@ -102,34 +102,17 @@ Content-Type: application/json
 "description": "New description"
 }
 
-### Add a Resource for a Teacher with File
-### Add a Resource for a Teacher with File
-POST http://localhost:3000/resources/teacher/47
-Content-Type: multipart/form-data
-
---boundary
-Content-Disposition: form-data; name="title"
-
-Sample Resource Title
---boundary
-Content-Disposition: form-data; name="description"
-
-This is a sample resource description.
---boundary
-Content-Disposition: form-data; name="resourceType"
-
-Video
---boundary
-Content-Disposition: form-data; name="file"; filename="sample.txt"
-Content-Type: text/plain
-
-This is the content of the sample text file.
---boundary--
 
 
 
 
+### Update a Resource by ID
+POST http://localhost:3000/graphql
+Content-Type: application/json
 
+{
+  "query": "query { getTeacherAvailability(teacherId: 1) { id startDateTime endDateTime repeatFrequency } }"
+}
 
 
 

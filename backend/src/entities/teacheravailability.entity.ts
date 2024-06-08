@@ -1,24 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Teacher } from './teacher.entity';
+import { TeacherAvailabilityException } from "./teacheravailabilityexception.entity";
 
 @Entity()
 export class TeacherAvailability {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  dayOfWeek: string; // e.g. "Monday", "Tuesday", etc.
-
-  @Column()
-  startTime: string; // e.g. "08:00", "09:00", etc.
-
-  @Column()
-  endTime: string; // e.g. "12:00", "15:00", etc.
-
-  @ManyToOne(() => Teacher)
+  @ManyToOne(() => Teacher, (teacher) => teacher.availabilities)
   @JoinColumn({ name: 'teacherId' })
   teacher: Teacher;
 
   @Column()
-  teacherId: number;
+  startDateTime: Date;
+
+  @Column()
+  endDateTime: Date;
+
+  @Column()
+  repeatFrequency: string;
+
+  @OneToMany(() => TeacherAvailabilityException, (exception) => exception.availability)
+  exceptions: TeacherAvailabilityException[];
 }
