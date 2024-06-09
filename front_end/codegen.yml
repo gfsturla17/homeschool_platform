@@ -1,5 +1,5 @@
 schema: ../shared/schema.gql
-documents: ./src/**/*.ts
+documents: ./src/graphql-queries/*.graphql
 generates:
   ./src/generated/graphql.ts:
     plugins:
@@ -10,3 +10,12 @@ generates:
       withHooks: true
       withComponent: false
       withHOC: false
+      add:
+        content: |
+          import axios from 'axios';
+          declare module 'axios' {
+            export interface AxiosRequestConfig {
+              query: string;
+              variables?: { [key: string]: any };
+            }
+          }

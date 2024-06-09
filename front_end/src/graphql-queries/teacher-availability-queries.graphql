@@ -1,0 +1,16 @@
+
+query GetTeacherAvailability($teacherId: Float!) {
+    getTeacherAvailability(teacherId: $teacherId) {
+        id
+        startDateTime
+        endDateTime
+        repeatFrequency
+        repeatUntil
+    }
+}
+
+mutation CreateTeacherAvailability($teacherId: Float!, $availability: TeacherAvailabilityInput!) {
+    createTeacherAvailability(teacherId: $teacherId, availability: $availability) {
+        id
+    }
+}

@@ -15,6 +15,26 @@ import { ToastContainer } from "react-toastify";
 import TeacherDashboard from "./components/Pages/TeacherDashboardPage/TeacherDashboard";
 import { rehydrateAuth } from "./store/authSlice";
 import TeacherAvailabilityCalendar from "./components/Pages/TeacherAvailabilityPage/TeacherAvailabilityCalendar";
+import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from "@apollo/client";
+
+const httpLink = new HttpLink({ uri: 'http://localhost:3000/graphql' });
+
+const authLink = new ApolloLink((operation, forward) => {
+  const token = localStorage.getItem('token');
+
+  operation.setContext({
+    headers: {
+      Authorization: token ? `Bearer ${token}` : '',
+    },
+  });
+
+  return forward(operation);
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
 
 function App() {
   const [theme] = useState(lightTheme);
@@ -26,13 +46,15 @@ function App() {
     dispatch(rehydrateAuth());
   }, [dispatch]);
 
+
+
   return (
+    <ApolloProvider client={client}>
     <ThemeProvider theme={theme}>
       <>
         <BrowserRouter>
           <ToastContainer />
           <Header />
-          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwn1o-TzQ0oc39YmmhdmM4dukkT9RUXNg}&libraries=places"></script>
           <Routes>
             <Route path="/" element={isLoggedIn ? <Navigate to="/home" replace={true} /> : <LandingPage />} />
             <Route element={<ProtectedRoute />}>
@@ -46,6 +68,7 @@ function App() {
         </BrowserRouter>
       </>
     </ThemeProvider>
+    </ApolloProvider>
   );
 }
 

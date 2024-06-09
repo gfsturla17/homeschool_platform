@@ -41,6 +41,16 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       driver: ApolloDriver,
       autoSchemaFile: '../shared/schema.gql',
       playground: true,
+      formatError: (error) => {
+        if (process.env.NODE_ENV === 'production') {
+          return {
+            message: error.message,
+            code: error.extensions.code,
+          };
+        } else {
+          return error;
+        }
+      },
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
