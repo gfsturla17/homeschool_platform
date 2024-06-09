@@ -1,0 +1,4 @@
+{
+  "schemaPath": "../shared/schema.gql",
+  "documents": "src/**/*.graphql"
+}

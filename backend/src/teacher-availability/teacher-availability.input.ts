@@ -6,6 +6,7 @@ enum RepeatFrequency {
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',
   MONTHLY = 'MONTHLY',
+  NONE = 'NONE',
 }
 
 @InputType()

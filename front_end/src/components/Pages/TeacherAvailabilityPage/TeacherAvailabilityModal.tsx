@@ -36,9 +36,10 @@ const TeacherAvailabilityModal = ({ onClose, selectedDate, handleAddEvent }) => 
         <div>
           <label>Repeat Frequency:</label>
           <select value={repeatFrequency} onChange={(e) => setRepeatFrequency(e.target.value)}>
-            <option value="weekly">Weekly</option>
-            <option value="bi-weekly">Bi-Weekly</option>
-            <option value="monthly">Monthly</option>
+            <option value="NONE">None</option>
+            <option value="WEEKLY">Weekly</option>
+            <option value="BI-WEEKLY">Bi-Weekly</option>
+            <option value="MONTHLY">Monthly</option>
           </select>
         </div>
         <div>

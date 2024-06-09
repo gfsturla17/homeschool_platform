@@ -32,22 +32,20 @@ export class TeacherAvailabilityService {
     });
 
     if (existingAvailability) {
-      throw new Error('Teacher availability already exists');
-    }
-
-    const teacherAvailability = this.teacherAvailabilityRepository.create({
-      teacher: existingTeacher,
-      startDateTime: availability.startDateTime,
-      endDateTime: availability.endDateTime,
-      repeatFrequency: availability.repeatFrequency,
-    });
-
-    try {
+      // Update the existing availability
+      existingAvailability.startDateTime = availability.startDateTime;
+      existingAvailability.endDateTime = availability.endDateTime;
+      existingAvailability.repeatFrequency = availability.repeatFrequency;
+      return await this.teacherAvailabilityRepository.save(existingAvailability);
+    } else {
+      // Create a new availability
+      const teacherAvailability = this.teacherAvailabilityRepository.create({
+        teacher: existingTeacher,
+        startDateTime: availability.startDateTime,
+        endDateTime: availability.endDateTime,
+        repeatFrequency: availability.repeatFrequency,
+      });
       return await this.teacherAvailabilityRepository.save(teacherAvailability);
-    } catch (error) {
-      // Log the error and throw a more specific error message
-      console.error(error);
-      throw new Error('Failed to create teacher availability');
     }
   }
 

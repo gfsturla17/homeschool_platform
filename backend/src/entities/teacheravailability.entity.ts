@@ -20,6 +20,9 @@ export class TeacherAvailability {
   @Column()
   repeatFrequency: string;
 
+  @Column({ nullable: true })
+  repeatUntil: Date;
+
   @OneToMany(() => TeacherAvailabilityException, (exception) => exception.availability)
   exceptions: TeacherAvailabilityException[];
 }

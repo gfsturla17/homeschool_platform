@@ -20,11 +20,7 @@ const TeacherAvailabilityCalendar = () => {
 
   useEffect(() => {
     getTeacherAvailability(teacherId).then((teacherAvailability) => {
-      const events = teacherAvailability.map((availability) => ({
-        start: new Date(availability.startDateTime),
-        end: new Date(availability.endDateTime),
-      }));
-      setEvents(events);
+      setEvents(teacherAvailability);
     });
   }, [teacherId]);
 
@@ -38,7 +34,7 @@ const TeacherAvailabilityCalendar = () => {
     const startDate = event.start;
     const endDate = event.end;
 
-    if (event.repeatFrequency === 'weekly') {
+    if (event.repeatFrequency === 'WEEKLY') {
       for (let i = 0; i < 52; i++) {
         const newStartDate = new Date(startDate.getTime() + i * 7 * 24 * 60 * 60 * 1000);
         const newEndDate = new Date(endDate.getTime() + i * 7 * 24 * 60 * 60 * 1000);
@@ -47,16 +43,7 @@ const TeacherAvailabilityCalendar = () => {
           end: newEndDate,
         });
       }
-    } else if (event.repeatFrequency === 'bi-weekly') {
-      for (let i = 0; i < 26; i++) {
-        const newStartDate = new Date(startDate.getTime() + i * 14 * 24 * 60 * 60 * 1000);
-        const newEndDate = new Date(endDate.getTime() + i * 14 * 24 * 60 * 60 * 1000);
-        newEvents.push({
-          start: newStartDate,
-          end: newEndDate,
-        });
-      }
-    } else if (event.repeatFrequency === 'monthly') {
+    } else if (event.repeatFrequency === 'MONTHLY') {
       for (let i = 0; i < 12; i++) {
         const newStartDate = new Date(startDate.getTime() + i * 30 * 24 * 60 * 60 * 1000);
         const newEndDate = new Date(endDate.getTime() + i * 30 * 24 * 60 * 60 * 1000);
@@ -65,10 +52,15 @@ const TeacherAvailabilityCalendar = () => {
           end: newEndDate,
         });
       }
+    } else {
+      newEvents.push({
+        start: startDate,
+        end: endDate,
+      });
     }
 
     createTeacherAvailability(teacherId, event).then((newEvent) => {
-      setEvents([...events, ...newEvents]);
+      setEvents([...events, ...newEvents]); // Update the state of the events
     });
 
     setModalOpen(false);

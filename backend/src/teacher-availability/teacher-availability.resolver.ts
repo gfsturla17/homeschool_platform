@@ -16,7 +16,8 @@ export class TeacherAvailabilityResolver {
   @UsePipes(new ValidationPipe())
   @UseGuards(RolesGuard)
   @Roles(Role.Teacher)
-  async createTeacherAvailability(@Args('teacherId') teacherId: number, @Args('availability') availability: TeacherAvailabilityInput) {
+  async createTeacherAvailability(@Args('teacherId') teacherId: number, @Args('availability') availability: TeacherAvailabilityInput)
+  {
     return this.teacherAvailabilityService.createTeacherAvailability(teacherId, availability);
   }
 

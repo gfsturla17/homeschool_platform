@@ -13,4 +13,7 @@ export class TeacherAvailabilityGraphQL {
 
   @Field()
   repeatFrequency: string;
+
+  @Field({ nullable: true })
+  repeatUntil: Date;
 }
