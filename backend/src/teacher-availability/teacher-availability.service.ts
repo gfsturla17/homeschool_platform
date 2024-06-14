@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TeacherAvailabilityInput } from './teacher-availability.input';
@@ -32,13 +32,11 @@ export class TeacherAvailabilityService {
     });
 
     if (existingAvailability) {
-      // Update the existing availability
       existingAvailability.startDateTime = availability.startDateTime;
       existingAvailability.endDateTime = availability.endDateTime;
       existingAvailability.repeatFrequency = availability.repeatFrequency;
       return await this.teacherAvailabilityRepository.save(existingAvailability);
     } else {
-      // Create a new availability
       const teacherAvailability = this.teacherAvailabilityRepository.create({
         teacher: existingTeacher,
         startDateTime: availability.startDateTime,
@@ -57,10 +55,31 @@ export class TeacherAvailabilityService {
       }
       return await this.teacherAvailabilityRepository.find({ where: { teacher: { userId: teacherId } } });
     } catch (error) {
-      // Log the error and throw a more specific error message
       console.error(error);
       throw new Error('Failed to get teacher availability');
     }
+  }
+
+  async updateTeacherAvailability(teacherId: number, availabilityId: number, availability: TeacherAvailabilityInput): Promise<TeacherAvailability> {
+    const existingAvailability = await this.teacherAvailabilityRepository.findOne({
+      where: {
+        id: availabilityId,
+        teacher: { id: teacherId },
+      },
+    });
+
+    if (!existingAvailability) {
+      throw new NotFoundException(`Availability with id ${availabilityId} for teacher ${teacherId} not found.`);
+    }
+
+
+    const updatedAvailability = await this.teacherAvailabilityRepository.preload({
+      id: availabilityId,
+      ...availability,
+    });
+    await this.teacherAvailabilityRepository.save(updatedAvailability);
+
+    return updatedAvailability;
   }
 }
 

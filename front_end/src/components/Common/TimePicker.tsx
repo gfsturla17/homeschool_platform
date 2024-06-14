@@ -26,18 +26,18 @@ const TimePickerButton = styled.button`
     }
 `;
 
-const TimePicker = () => {
-  const [hour, setHour] = useState(2);
-  const [minute, setMinute] = useState(11);
-  const [meridiem, setMeridiem] = useState('AM');
-
+const TimePicker = ({time, onChange}) => {
   const hours = Array(12).fill(0).map((_, i) => i + 1);
   const minutes = Array(60).fill(0).map((_, i) => i);
   const meridiems = ['AM', 'PM'];
 
-  const [hourIndex, setHourIndex] = useState(2);
-  const [minuteIndex, setMinuteIndex] = useState(11);
-  const [meridiemIndex, setMeridiemIndex] = useState(0);
+  const [hour, setHour] = useState(time.getHours() % 12 || 12);
+  const [minute, setMinute] = useState(time.getMinutes());
+  const [meridiem, setMeridiem] = useState(time.getHours() < 12 ? 'AM' : 'PM');
+
+  const [hourIndex, setHourIndex] = useState(hours.indexOf(hour));
+  const [minuteIndex, setMinuteIndex] = useState(minutes.indexOf(minute));
+  const [meridiemIndex, setMeridiemIndex] = useState(meridiems.indexOf(meridiem));
 
   const handleHourChange = (direction: 'up' | 'down') => {
     if (direction === 'up') {
@@ -46,6 +46,9 @@ const TimePicker = () => {
       setHourIndex(hourIndex === hours.length - 1 ? 0 : hourIndex + 1);
     }
     setHour(hours[hourIndex]);
+    const newTime = new Date(time);
+    newTime.setHours(hours[hourIndex] + (meridiem === 'PM' ? 12 : 0));
+    onChange(newTime);
   };
 
   const handleMinuteChange = (direction: 'up' | 'down') => {
@@ -55,6 +58,9 @@ const TimePicker = () => {
       setMinuteIndex(minuteIndex === minutes.length - 1 ? 0 : minuteIndex + 1);
     }
     setMinute(minutes[minuteIndex]);
+    const newTime = new Date(time);
+    newTime.setMinutes(minutes[minuteIndex]);
+    onChange(newTime);
   };
 
   const handleMeridiemChange = (direction: 'up' | 'down') => {
@@ -64,6 +70,9 @@ const TimePicker = () => {
       setMeridiemIndex(meridiemIndex === meridiems.length - 1 ? 0 : meridiemIndex + 1);
     }
     setMeridiem(meridiems[meridiemIndex]);
+    const newTime = new Date(time);
+    newTime.setHours(hour + (meridiem === 'PM' ? 12 : 0));
+    onChange(newTime);
   };
 
   const getHoursToDisplay = () => {

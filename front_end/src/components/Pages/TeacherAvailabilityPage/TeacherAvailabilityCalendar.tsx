@@ -5,27 +5,35 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import "react-datepicker/dist/react-datepicker.css";
 import TeacherAvailabilityModal from './TeacherAvailabilityModal';
 import { CalendarContainer } from './TeacherAvailabilityStyles';
-
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
-import { createTeacherAvailability, getTeacherAvailability } from "../../../services/teacherAvailabilityService";
-import { useGetTeacherAvailabilityQuery } from "../../../generated/graphql";
+import { createTeacherAvailability} from "../../../services/teacherAvailabilityService";
+import {
+  useCreateTeacherAvailabilityMutation,
+  useGetTeacherAvailabilityQuery,
+  useUpdateTeacherAvailabilityMutation
+} from "../../../generated/graphql";
 
 const localizer = momentLocalizer(moment);
-
-
 const TeacherAvailabilityCalendar = () => {
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const teacherId = useSelector((state: RootState) => state.auth.id);
-  const { loading, error, data } = useGetTeacherAvailabilityQuery( {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const { data: teacherAvailabilityData, error: teacherAvailabilityError, loading: teacherAvailabilityLoading } = useGetTeacherAvailabilityQuery({
     variables: { teacherId },
   });
 
+  const [createTeacherAvailability, { data, error: createError, loading: createLoading }] = useCreateTeacherAvailabilityMutation();
+  const [updateTeacherAvailability, { data: updateData, error: updateError, loading: updateLoading }] = useUpdateTeacherAvailabilityMutation();
+
+
   useEffect(() => {
-    if (data) {
-      const availabilities = data.getTeacherAvailability;
+
+    if (teacherAvailabilityData) {
+      const availabilities = teacherAvailabilityData.getTeacherAvailability;
       const events = [];
 
       availabilities.forEach((availability) => {
@@ -38,6 +46,7 @@ const TeacherAvailabilityCalendar = () => {
           let newEndDate = endDate;
           while (newStartDate <= repeatUntil) {
             events.push({
+              id: availability.id, // Include the id of the availability
               start: newStartDate,
               end: newEndDate,
             });
@@ -49,6 +58,7 @@ const TeacherAvailabilityCalendar = () => {
           let newEndDate = endDate;
           while (newStartDate <= repeatUntil) {
             events.push({
+              id: availability.id, // Include the id of the availability
               start: newStartDate,
               end: newEndDate,
             });
@@ -57,22 +67,54 @@ const TeacherAvailabilityCalendar = () => {
           }
         } else {
           events.push({
+            id: availability.id, // Include the id of the availability
             start: startDate,
             end: endDate,
           });
         }
       });
-
       setEvents(events);
     }
-  }, [data]);
+  }, [teacherAvailabilityData]);
 
   const handleSelect = ({ start, end }) => {
     setSelectedDate(start);
     setModalOpen(true);
   };
 
+  const handleSelectEvent = (event) => {
+    setModalOpen(true);
+    setSelectedEvent(event);
+  };
+
+  const handleUpdateEvent = (event) => {
+    updateTeacherAvailability({
+      variables: {
+        teacherId,
+        availabilityId: parseFloat(selectedEvent.id),
+        availability: {
+          startDateTime: event.start.toISOString(),
+          endDateTime: event.end.toISOString(),
+          repeatFrequency: event.repeatFrequency,
+        },
+      },
+    }).then((result) => {
+      const updatedEvents = events.map((e) => {
+        if (e.id === selectedEvent.id) {
+          return { ...e, ...event };
+        }
+        return e;
+      });
+      setEvents(updatedEvents);
+    }).catch((error) => {
+      console.error('Update error:', error); // Log the error
+    });
+
+    setModalOpen(false);
+  };
+
   const handleAddEvent = (event) => {
+    console.log('Adding event:', event);
     const newEvents = [];
     const startDate = event.start;
     const endDate = event.end;
@@ -102,8 +144,21 @@ const TeacherAvailabilityCalendar = () => {
       });
     }
 
-    createTeacherAvailability(teacherId, event).then((newEvent) => {
-      setEvents([...events, ...newEvents]); // Update the state of the events
+    createTeacherAvailability({
+      variables: {
+        teacherId,
+        availability: {
+          startDateTime: startDate.toISOString(),
+          endDateTime: endDate.toISOString(),
+          repeatFrequency: event.repeatFrequency,
+        },
+      },
+    }).then((result) => {
+      const newEvent = result.data.createTeacherAvailability;
+      setEvents((prevEvents) => [...prevEvents, newEvent]);
+      setSelectedEvent(newEvent); // Update the selectedEvent state
+    }).catch((error) => {
+      console.error(error);
     });
 
     setModalOpen(false);
@@ -117,7 +172,7 @@ const TeacherAvailabilityCalendar = () => {
           events={events}
           startAccessor="start"
           endAccessor="end"
-          onSelectEvent={(event) => alert(event.title)}
+          onSelectEvent={handleSelectEvent} // Add this line
           onSelectSlot={handleSelect}
           selectable
           defaultView="month"
@@ -128,6 +183,9 @@ const TeacherAvailabilityCalendar = () => {
           onClose={() => setModalOpen(false)}
           selectedDate={selectedDate}
           handleAddEvent={handleAddEvent}
+          handleUpdateEvent={handleUpdateEvent}
+          selectedEvent={selectedEvent}
+
         />
       )}
     </div>

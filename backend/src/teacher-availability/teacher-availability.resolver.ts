@@ -18,14 +18,28 @@ export class TeacherAvailabilityResolver {
   @Roles(Role.Teacher)
   async createTeacherAvailability(@Args('teacherId') teacherId: number, @Args('availability') availability: TeacherAvailabilityInput)
   {
-    return this.teacherAvailabilityService.createTeacherAvailability(teacherId, availability);
+    const result = await this.teacherAvailabilityService.createTeacherAvailability(teacherId, availability);
+    return result;
   }
 
-  @Query(returns => [TeacherAvailabilityGraphQL]) // Note the array return type
+  @Query(returns => [TeacherAvailabilityGraphQL], { description: 'Get teacher availability' })
   @UseGuards(RolesGuard)
-  @Roles(Role.Teacher) // Only allow teachers and admins to access this endpoint
+  @Roles(Role.Teacher)
   async getTeacherAvailability(@Args('teacherId') teacherId: number) {
     return await this.teacherAvailabilityService.getTeacherAvailability(teacherId);
+  }
+
+  @Mutation(returns => TeacherAvailabilityGraphQL)
+  @UsePipes(new ValidationPipe())
+  @UseGuards(RolesGuard)
+  @Roles(Role.Teacher)
+  async updateTeacherAvailability(
+    @Args('teacherId') teacherId: number,
+    @Args('availabilityId') availabilityId: number,
+    @Args('availability') availability: TeacherAvailabilityInput,
+  ) {
+    const result = await this.teacherAvailabilityService.updateTeacherAvailability(teacherId, availabilityId, availability);
+    return result;
   }
 }
 

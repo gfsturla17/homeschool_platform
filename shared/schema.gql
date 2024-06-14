@@ -16,11 +16,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
+  """Get teacher availability"""
   getTeacherAvailability(teacherId: Float!): [TeacherAvailabilityGraphQL!]!
 }
 
 type Mutation {
   createTeacherAvailability(teacherId: Float!, availability: TeacherAvailabilityInput!): TeacherAvailabilityGraphQL!
+  updateTeacherAvailability(teacherId: Float!, availabilityId: Float!, availability: TeacherAvailabilityInput!): TeacherAvailabilityGraphQL!
 }
 
 input TeacherAvailabilityInput {

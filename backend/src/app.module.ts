@@ -41,6 +41,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       driver: ApolloDriver,
       autoSchemaFile: '../shared/schema.gql',
       playground: true,
+      introspection: true,
       formatError: (error) => {
         if (process.env.NODE_ENV === 'production') {
           return {
@@ -68,7 +69,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     }),
     JwtModule.register({
       secret: process.env.SECRET_KEY,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '24h' },
     }),
     TeacherModule,
     AuthModule,

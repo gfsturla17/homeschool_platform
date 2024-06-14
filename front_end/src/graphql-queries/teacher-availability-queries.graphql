@@ -14,3 +14,13 @@ mutation CreateTeacherAvailability($teacherId: Float!, $availability: TeacherAva
         id
     }
 }
+
+mutation UpdateTeacherAvailability($teacherId: Float!, $availabilityId: Float!, $availability: TeacherAvailabilityInput!) {
+    updateTeacherAvailability(teacherId: $teacherId, availabilityId: $availabilityId, availability: $availability) {
+        id
+        startDateTime
+        endDateTime
+        repeatFrequency
+        repeatUntil
+    }
+}

@@ -5,14 +5,12 @@ import { response } from "express";
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     try {
-      console.log("Filter")
       const ctx = host.switchToHttp();
       const response = ctx.getResponse();
       const request = ctx.getRequest();
       const status = exception.getStatus();
 
-      if (true) {
-        console.log("In here")
+      if (process.env.NODE_ENV === 'production') {
         return {
           statusCode: status,
           message: exception.message,

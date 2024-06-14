@@ -1,28 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { TimePickerContainer } from './TeacherAvailabilityStyles';
 import { ModalBackground, ModalContainer } from "../../Common/styles/shared-styles";
 import TimePicker from "../../Common/TimePicker";
 
-const TeacherAvailabilityModal = ({ onClose, selectedDate, handleAddEvent }) => {
-  const [repeatFrequency, setRepeatFrequency] = useState('weekly');
-  const [startTime, setStartTime] = useState(new Date('2022-01-01 08:00')); // Initialize with a Date object
-  const [endTime, setEndTime] = useState(new Date('2022-01-01 17:00')); // Initialize with a Date object
+const TeacherAvailabilityModal = ({ onClose, selectedDate, handleAddEvent, selectedEvent, handleUpdateEvent  }) => {
+  const [repeatFrequency, setRepeatFrequency] = useState(selectedEvent ? selectedEvent.repeatFrequency : 'NONE');
+  const [startTime, setStartTime] = useState(selectedEvent ? new Date(selectedEvent.start) : new Date());
+  const [endTime, setEndTime] = useState(selectedEvent ? new Date(selectedEvent.end) : new Date());
+  useEffect(() => {
+    if (selectedEvent) {
+      setStartTime(new Date(selectedEvent.start));
+      setEndTime(new Date(selectedEvent.end));
+      setRepeatFrequency(selectedEvent.repeatFrequency || 'NONE');
+
+    } else {
+      setStartTime(new Date(selectedDate));
+      setEndTime(new Date(selectedDate));
+    }
+  }, [selectedEvent, selectedDate]);
 
   const handleSave = () => {
-    handleAddEvent({
-      start: new Date(`${selectedDate.toDateString()} ${startTime.getHours()}:${startTime.getMinutes()}`),
-      end: new Date(`${selectedDate.toDateString()} ${endTime.getHours()}:${endTime.getMinutes()}`),
-      repeatFrequency,
-    });
-    onClose();
-  };
+    console.log('Save button clicked');
+    console.log('Selected Event:', selectedEvent);
+    console.log('Start Time:', startTime);
+    console.log('End Time:', endTime);
+    console.log('Repeat Frequency:', repeatFrequency);
 
-  const handleTimeChange = (value: string, setState: (date: Date) => void) => {
-    const [hours, minutes] = value.split(':');
-    const date = new Date();
-    date.setHours(parseInt(hours));
-    date.setMinutes(parseInt(minutes));
-    setState(date);
+    if (selectedEvent) {
+      handleUpdateEvent({
+        id: selectedEvent.id,
+        start: startTime,
+        end: endTime,
+        repeatFrequency,
+      });
+    } else {
+      handleAddEvent({
+        start: startTime,
+        end: endTime,
+        repeatFrequency,
+      });
+    }
+    onClose();
   };
 
   return (
@@ -38,20 +56,25 @@ const TeacherAvailabilityModal = ({ onClose, selectedDate, handleAddEvent }) => 
           <select value={repeatFrequency} onChange={(e) => setRepeatFrequency(e.target.value)}>
             <option value="NONE">None</option>
             <option value="WEEKLY">Weekly</option>
-            <option value="BI-WEEKLY">Bi-Weekly</option>
             <option value="MONTHLY">Monthly</option>
           </select>
         </div>
         <div>
           <label>Start Time:</label>
           <TimePickerContainer>
-            <TimePicker></TimePicker>
+            <TimePicker
+              time={startTime}
+              onChange={(newTime) => setStartTime(newTime)}
+            />
           </TimePickerContainer>
         </div>
         <div>
           <label>End Time:</label>
           <TimePickerContainer>
-            <TimePicker></TimePicker>
+            <TimePicker
+              time={endTime}
+              onChange={(newTime) => setEndTime(newTime)}
+            />
           </TimePickerContainer>
         </div>
         <button onClick={handleSave}>Save</button>

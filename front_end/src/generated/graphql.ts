@@ -22,6 +22,7 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTeacherAvailability: TeacherAvailabilityGraphQl;
+  updateTeacherAvailability: TeacherAvailabilityGraphQl;
 };
 
 
@@ -30,8 +31,16 @@ export type MutationCreateTeacherAvailabilityArgs = {
   teacherId: Scalars['Float']['input'];
 };
 
+
+export type MutationUpdateTeacherAvailabilityArgs = {
+  availability: TeacherAvailabilityInput;
+  availabilityId: Scalars['Float']['input'];
+  teacherId: Scalars['Float']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  /** Get teacher availability */
   getTeacherAvailability: Array<TeacherAvailabilityGraphQl>;
 };
 
@@ -69,6 +78,15 @@ export type CreateTeacherAvailabilityMutationVariables = Exact<{
 
 
 export type CreateTeacherAvailabilityMutation = { __typename?: 'Mutation', createTeacherAvailability: { __typename?: 'TeacherAvailabilityGraphQL', id: number } };
+
+export type UpdateTeacherAvailabilityMutationVariables = Exact<{
+  teacherId: Scalars['Float']['input'];
+  availabilityId: Scalars['Float']['input'];
+  availability: TeacherAvailabilityInput;
+}>;
+
+
+export type UpdateTeacherAvailabilityMutation = { __typename?: 'Mutation', updateTeacherAvailability: { __typename?: 'TeacherAvailabilityGraphQL', id: number, startDateTime: any, endDateTime: any, repeatFrequency: string, repeatUntil?: any | null } };
 
 
 export const GetTeacherAvailabilityDocument = gql`
@@ -149,3 +167,46 @@ export function useCreateTeacherAvailabilityMutation(baseOptions?: Apollo.Mutati
 export type CreateTeacherAvailabilityMutationHookResult = ReturnType<typeof useCreateTeacherAvailabilityMutation>;
 export type CreateTeacherAvailabilityMutationResult = Apollo.MutationResult<CreateTeacherAvailabilityMutation>;
 export type CreateTeacherAvailabilityMutationOptions = Apollo.BaseMutationOptions<CreateTeacherAvailabilityMutation, CreateTeacherAvailabilityMutationVariables>;
+export const UpdateTeacherAvailabilityDocument = gql`
+    mutation UpdateTeacherAvailability($teacherId: Float!, $availabilityId: Float!, $availability: TeacherAvailabilityInput!) {
+  updateTeacherAvailability(
+    teacherId: $teacherId
+    availabilityId: $availabilityId
+    availability: $availability
+  ) {
+    id
+    startDateTime
+    endDateTime
+    repeatFrequency
+    repeatUntil
+  }
+}
+    `;
+export type UpdateTeacherAvailabilityMutationFn = Apollo.MutationFunction<UpdateTeacherAvailabilityMutation, UpdateTeacherAvailabilityMutationVariables>;
+
+/**
+ * __useUpdateTeacherAvailabilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateTeacherAvailabilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTeacherAvailabilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTeacherAvailabilityMutation, { data, loading, error }] = useUpdateTeacherAvailabilityMutation({
+ *   variables: {
+ *      teacherId: // value for 'teacherId'
+ *      availabilityId: // value for 'availabilityId'
+ *      availability: // value for 'availability'
+ *   },
+ * });
+ */
+export function useUpdateTeacherAvailabilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTeacherAvailabilityMutation, UpdateTeacherAvailabilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTeacherAvailabilityMutation, UpdateTeacherAvailabilityMutationVariables>(UpdateTeacherAvailabilityDocument, options);
+      }
+export type UpdateTeacherAvailabilityMutationHookResult = ReturnType<typeof useUpdateTeacherAvailabilityMutation>;
+export type UpdateTeacherAvailabilityMutationResult = Apollo.MutationResult<UpdateTeacherAvailabilityMutation>;
+export type UpdateTeacherAvailabilityMutationOptions = Apollo.BaseMutationOptions<UpdateTeacherAvailabilityMutation, UpdateTeacherAvailabilityMutationVariables>;
