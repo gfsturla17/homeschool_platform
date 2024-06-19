@@ -6,7 +6,7 @@ import { AutoMap } from "@automapper/classes";
 export class ParentProfile {
   @PrimaryGeneratedColumn()
   @AutoMap()
-  id: number;
+  parentProfileId: number;
 
   @Column({ nullable: true })
   @AutoMap()
@@ -17,7 +17,7 @@ export class ParentProfile {
   profilePictureUrl: string;
 
   @OneToOne(() => Parent, (parent) => parent.profile)
-  @JoinColumn({ name: 'parent_profile_id_fk' })
+  @JoinColumn({ name: 'parent_id', referencedColumnName:'parentId', foreignKeyConstraintName: 'fk_parent_profile_parent'})
   @AutoMap()
   parent: Parent;
 }

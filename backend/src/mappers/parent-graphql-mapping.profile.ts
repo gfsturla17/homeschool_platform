@@ -15,20 +15,8 @@ export class ParentGraphqlMappingProfile extends AutomapperProfile {
       // Mapping ParentProfile to ParentProfileGraphQL
       createMap(mapper, ParentProfile, ParentProfileGraphQL,
         forMember(
-          (parentProfileGraphQL) => parentProfileGraphQL.address,
-          mapFrom((parentProfile) => parentProfile.parent.user.address.address)
-        ),
-        forMember(
-          (parentProfileGraphQL) => parentProfileGraphQL.city,
-          mapFrom((parentProfile) => parentProfile.parent.user.address.city)
-        ),
-        forMember(
-          (parentProfileGraphQL) => parentProfileGraphQL.state,
-          mapFrom((parentProfile) => parentProfile.parent.user.address.state)
-        ),
-        forMember(
-          (parentProfileGraphQL) => parentProfileGraphQL.id,
-          mapFrom((parentProfile) => parentProfile.id)
+          (parentProfileGraphQL) => parentProfileGraphQL.parentProfileId,
+          mapFrom((parentProfile) => parentProfile.parentProfileId)
         ),
         forMember(
           (parentProfileGraphQL) => parentProfileGraphQL.biography,
@@ -37,11 +25,27 @@ export class ParentGraphqlMappingProfile extends AutomapperProfile {
         forMember(
           (parentProfileGraphQL) => parentProfileGraphQL.profilePictureUrl,
           mapFrom((parentProfile) => parentProfile.profilePictureUrl)
+        ),
+        forMember(
+          (parentProfileGraphQL) => parentProfileGraphQL.address,
+          mapFrom((parentProfile) => parentProfile.parent.user.address ? parentProfile.parent.user.address.address : null)
+        ),
+        forMember(
+          (parentProfileGraphQL) => parentProfileGraphQL.city,
+          mapFrom((parentProfile) => parentProfile.parent.user.address ? parentProfile.parent.user.address.city : null)
+        ),
+        forMember(
+          (parentProfileGraphQL) => parentProfileGraphQL.state,
+          mapFrom((parentProfile) => parentProfile.parent.user.address ? parentProfile.parent.user.address.state : null)
         )
       );
 
       // Mapping Parent to ParentGraphQL
       createMap(mapper, Parent, ParentGraphQL,
+        forMember(
+          (ParentGraphQL) => ParentGraphQL.userId,
+          mapFrom((Parent) => Parent.user.id)
+        ),
         forMember(
           (parentGraphQL) => parentGraphQL.profile,
           mapWith(
@@ -49,13 +53,7 @@ export class ParentGraphqlMappingProfile extends AutomapperProfile {
             ParentProfile,
             (parent) => parent.profile
           )
-        ),
-        afterMap((source, destination) => {
-          // Custom logic after mapping
-          if (destination.profile) {
-            destination.profile.id = source.user.id;
-          }
-        })
+        )
       );
     };
   }

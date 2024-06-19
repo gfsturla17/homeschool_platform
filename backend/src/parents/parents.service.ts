@@ -58,20 +58,15 @@ export class ParentService {
       const parent = new Parent();
       parent.firstName = data.firstName;
       parent.lastName = data.lastName;
-      parent.userId = savedUser.id;
-      const savedParent = await this.parentRepository.save(parent);
+      parent.user = savedUser;
+      let savedParent = await this.parentRepository.save(parent);
 
       const parentProfile = new ParentProfile();
       parentProfile.parent = savedParent;
-      parentProfile.biography = data.biography;
-      parentProfile.profilePictureUrl = data.profilePictureUrl;
 
       savedParent.profile = await this.parentProfileRepository.save(parentProfile)
-      console.log("Saved Parent: ", savedParent)
-      let parentgraphql = this.mapper.map(parent, Parent, ParentGraphQL);
-      parentgraphql.id = 1
-      console.log("Parent GraphQL: ", parentgraphql)
-      return parentgraphql
+      return this.mapper.map(parent, Parent, ParentGraphQL);
+
     } catch (error) {
       throw error;
     }

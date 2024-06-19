@@ -8,7 +8,7 @@ import { AutoMap } from "@automapper/classes";
 export class Parent {
   @PrimaryGeneratedColumn()
   @AutoMap()
-  id: number;
+  parentId: number;
 
   @Column()
   @AutoMap()
@@ -18,17 +18,13 @@ export class Parent {
   @AutoMap()
   lastName: string;
 
-  @OneToOne(() => User)
-  @JoinColumn({ name: 'parent_user_id_fk' })
+  @OneToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id', foreignKeyConstraintName: 'fk_parent_user_id_fk' })
   @AutoMap()
   user: User;
 
-  @Column()
-  @AutoMap()
-  userId: number;
-
   @OneToOne(() => ParentProfile, (profile) => profile.parent)
-  @JoinColumn({ name: 'parent_profile_id_fk' })
+  @JoinColumn({ name: 'parentProfileId', referencedColumnName: 'parentProfileId', foreignKeyConstraintName: 'Fk_parent_parent_profile_id'})
   @AutoMap()
   profile: ParentProfile;
 }

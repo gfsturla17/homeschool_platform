@@ -16,7 +16,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type ParentProfileGraphQL {
-  id: Int!
+  parentProfileId: Int!
   address: String
   city: String
   state: String
@@ -25,7 +25,7 @@ type ParentProfileGraphQL {
 }
 
 type ParentGraphQL {
-  id: Int!
+  parentId: Int!
   firstName: String!
   lastName: String!
   userId: Int!

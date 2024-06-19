@@ -7,7 +7,7 @@ import { Parent } from "../entities/parent.entity";
 export class ParentProfileGraphQL {
   @Field(type => Int)
   @AutoMap()
-  id: number;
+  parentProfileId: number;
 
   @Field({ nullable: true })
   @AutoMap()
@@ -34,7 +34,7 @@ export class ParentProfileGraphQL {
 export class ParentGraphQL {
   @Field(type => Int)
   @AutoMap()
-  id: number;
+  parentId: number;
 
   @Field()
   @AutoMap()
