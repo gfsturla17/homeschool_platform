@@ -18,7 +18,7 @@ export class ParentResolver {
       return await this.parentService.createParent(data);
   }
 
-  @Query(returns => [ParentGraphQL], { description: 'Get list of all parents' })
+  @Query(returns => [ParentGraphQL], { description: 'Get list of all parents ' })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin, Role.Teacher)
   async getParents() {
