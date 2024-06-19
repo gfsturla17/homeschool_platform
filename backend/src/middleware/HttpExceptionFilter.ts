@@ -11,7 +11,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const response = ctx.getResponse();
       const request = ctx.getRequest();
       const status = exception.getStatus();
-      if (process.env.NODE_ENV === 'production') { 
+      if (process.env.NODE_ENV === 'production') {
         return {
           statusCode: status,
           message: exception.message,
