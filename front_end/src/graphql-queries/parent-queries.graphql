@@ -1,0 +1,16 @@
+mutation SignupParent($data: CreateParentInput!) {
+    signupParent(data: $data) {
+        id
+        firstName
+        lastName
+        userId
+        profile {
+            id
+            address
+            biography
+            city
+            profilePictureUrl
+            state
+        }
+    }
+}

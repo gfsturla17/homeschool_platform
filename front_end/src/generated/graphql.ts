@@ -19,9 +19,17 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type CreateParentInput = {
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createTeacherAvailability: TeacherAvailabilityGraphQl;
+  signupParent: ParentGraphQl;
   updateTeacherAvailability: TeacherAvailabilityGraphQl;
 };
 
@@ -32,14 +40,40 @@ export type MutationCreateTeacherAvailabilityArgs = {
 };
 
 
+export type MutationSignupParentArgs = {
+  data: CreateParentInput;
+};
+
+
 export type MutationUpdateTeacherAvailabilityArgs = {
   availability: TeacherAvailabilityInput;
   availabilityId: Scalars['Float']['input'];
   teacherId: Scalars['Float']['input'];
 };
 
+export type ParentGraphQl = {
+  __typename?: 'ParentGraphQL';
+  firstName: Scalars['String']['output'];
+  id: Scalars['Int']['output'];
+  lastName: Scalars['String']['output'];
+  profile?: Maybe<ParentProfileGraphQl>;
+  userId: Scalars['Int']['output'];
+};
+
+export type ParentProfileGraphQl = {
+  __typename?: 'ParentProfileGraphQL';
+  address?: Maybe<Scalars['String']['output']>;
+  biography?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  id: Scalars['Int']['output'];
+  profilePictureUrl?: Maybe<Scalars['String']['output']>;
+  state?: Maybe<Scalars['String']['output']>;
+};
+
 export type Query = {
   __typename?: 'Query';
+  /** Get list of all parents */
+  getParents: Array<ParentGraphQl>;
   /** Get teacher availability */
   getTeacherAvailability: Array<TeacherAvailabilityGraphQl>;
 };
@@ -63,6 +97,13 @@ export type TeacherAvailabilityInput = {
   repeatFrequency: Scalars['String']['input'];
   startDateTime: Scalars['DateTime']['input'];
 };
+
+export type SignupParentMutationVariables = Exact<{
+  data: CreateParentInput;
+}>;
+
+
+export type SignupParentMutation = { __typename?: 'Mutation', signupParent: { __typename?: 'ParentGraphQL', id: number, firstName: string, lastName: string, userId: number, profile?: { __typename?: 'ParentProfileGraphQL', id: number, address?: string | null, biography?: string | null, city?: string | null, profilePictureUrl?: string | null, state?: string | null } | null } };
 
 export type GetTeacherAvailabilityQueryVariables = Exact<{
   teacherId: Scalars['Float']['input'];
@@ -89,6 +130,50 @@ export type UpdateTeacherAvailabilityMutationVariables = Exact<{
 export type UpdateTeacherAvailabilityMutation = { __typename?: 'Mutation', updateTeacherAvailability: { __typename?: 'TeacherAvailabilityGraphQL', id: number, startDateTime: any, endDateTime: any, repeatFrequency: string, repeatUntil?: any | null } };
 
 
+export const SignupParentDocument = gql`
+    mutation SignupParent($data: CreateParentInput!) {
+  signupParent(data: $data) {
+    id
+    firstName
+    lastName
+    userId
+    profile {
+      id
+      address
+      biography
+      city
+      profilePictureUrl
+      state
+    }
+  }
+}
+    `;
+export type SignupParentMutationFn = Apollo.MutationFunction<SignupParentMutation, SignupParentMutationVariables>;
+
+/**
+ * __useSignupParentMutation__
+ *
+ * To run a mutation, you first call `useSignupParentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignupParentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signupParentMutation, { data, loading, error }] = useSignupParentMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSignupParentMutation(baseOptions?: Apollo.MutationHookOptions<SignupParentMutation, SignupParentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignupParentMutation, SignupParentMutationVariables>(SignupParentDocument, options);
+      }
+export type SignupParentMutationHookResult = ReturnType<typeof useSignupParentMutation>;
+export type SignupParentMutationResult = Apollo.MutationResult<SignupParentMutation>;
+export type SignupParentMutationOptions = Apollo.BaseMutationOptions<SignupParentMutation, SignupParentMutationVariables>;
 export const GetTeacherAvailabilityDocument = gql`
     query GetTeacherAvailability($teacherId: Float!) {
   getTeacherAvailability(teacherId: $teacherId) {

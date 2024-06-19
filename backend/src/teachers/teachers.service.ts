@@ -66,13 +66,10 @@ export class TeacherService {
       await this.userRepository.save(user);
 
       let teacherRole = await this.roleRepository.findOne({ where: { name: 'Teacher' } });
-      console.log("Found role before creation: ", teacherRole); // Log the result here
       if (!teacherRole) {
         teacherRole = new Role();
         teacherRole.name = 'Teacher';
-        console.log("Creating new role: ", teacherRole); // Log new role creation
         await this.roleRepository.save(teacherRole);
-        console.log("New role saved: ", teacherRole); // Log after saving
       }
 
       if (!teacherRole || !teacherRole.name) {
@@ -83,7 +80,6 @@ export class TeacherService {
       userRole.user = user;
       userRole.role = teacherRole;
       userRole.assignedAt = new Date();
-      console.log("UserRole before save: ", userRole); // Log the userRole variable here
       await this.userRoleRepository.save(userRole);
 
       const teacher = new Teacher();
@@ -98,13 +94,6 @@ export class TeacherService {
 
       return teacher;
     } catch (error) {
-      console.error('Error creating teacher:', error);
-      if (error.query) {
-        console.error('Query: ', error.query);
-      }
-      if (error.parameters) {
-        console.error('Parameters: ', error.parameters);
-      }
       throw error;
     }
   }

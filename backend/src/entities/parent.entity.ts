@@ -1,22 +1,34 @@
 // src/users/user.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 import { User } from "./user.entity";
+import { ParentProfile } from "./parentprofile.entity";
+import { AutoMap } from "@automapper/classes";
 
 @Entity()
-export class ParentEntity {
+export class Parent {
   @PrimaryGeneratedColumn()
-  id!: number;
+  @AutoMap()
+  id: number;
 
   @Column()
-  firstName!: string;
+  @AutoMap()
+  firstName: string;
 
   @Column()
-  lastName!: string;
+  @AutoMap()
+  lastName: string;
 
   @OneToOne(() => User)
-  @JoinColumn({ name: 'userId' })
-  user!: User;
+  @JoinColumn({ name: 'parent_user_id_fk' })
+  @AutoMap()
+  user: User;
 
   @Column()
-  userId!: number;
+  @AutoMap()
+  userId: number;
+
+  @OneToOne(() => ParentProfile, (profile) => profile.parent)
+  @JoinColumn({ name: 'parent_profile_id_fk' })
+  @AutoMap()
+  profile: ParentProfile;
 }

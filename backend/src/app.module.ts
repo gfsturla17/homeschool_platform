@@ -5,15 +5,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TeacherModule } from './teachers/teachers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeacherController } from './teachers/teachers.controller';
-import { Teacher } from './entities/teacher.entity';
-import { TeacherLoginCredentials } from './entities/teacherlogincredentials.entity';
 import { AuthModule } from './auth/auth.module';
 import { ResourcesModule } from './resources/resources.module';
 import { diskStorage } from "multer";
 import { MulterModule } from "@nestjs/platform-express";
 import { FileTypeMiddleware } from './middleware/file-type.middleware';
-import { AuthMiddleware } from "./middleware/auth.middleware";
-import { JwtModule } from "@nestjs/jwt"; // Import middleware
+import { JwtModule } from "@nestjs/jwt";
 import { UserModule } from './user/user.module';
 import { AuthGuard } from "./auth/auth.guard";
 import { APP_GUARD } from "@nestjs/core";
@@ -21,6 +18,10 @@ import { RolesGuard } from "./auth/roles.guard";
 import { TeacherAvailabilityModule } from './teacher-availability/teacher-availability.module';
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ParentsModule } from './parents/parents.module';
+import { classes } from "@automapper/classes";
+import { AutomapperModule } from "@automapper/nestjs";
+import { ParentGraphqlMappingProfile } from "./mappers/parent-graphql-mapping.profile";
 
 
 @Module({
@@ -40,8 +41,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: '../shared/schema.gql',
-      playground: true,
-      introspection: true,
+      playground: process.env.NODE_ENV !== 'production',
+      introspection: process.env.NODE_ENV !== 'production',
       formatError: (error) => {
         if (process.env.NODE_ENV === 'production') {
           return {
@@ -71,23 +72,28 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       secret: process.env.SECRET_KEY,
       signOptions: { expiresIn: '24h' },
     }),
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+    }),
     TeacherModule,
     AuthModule,
     ResourcesModule,
     UserModule,
     TeacherAvailabilityModule,
+    ParentsModule,
   ],
   controllers: [AppController, TeacherController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    ParentGraphqlMappingProfile,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
 })
 export class AppModule implements NestModule {

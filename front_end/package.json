@@ -48,7 +48,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"react-scripts start\" \"graphql-codegen --watch\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -75,11 +75,13 @@
   },
   "devDependencies": {
     "@apollo/client": "^3.10.4",
+    "@parcel/watcher": "^2.4.1",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/react-easy-crop": "^2.0.0",
     "@types/react-modal": "^3.16.3",
     "@types/react-places-autocomplete": "^7.2.14",
     "@types/react-router-dom": "^5.3.3",
-    "apollo-codegen": "^0.20.2"
+    "apollo-codegen": "^0.20.2",
+    "concurrently": "^8.2.2"
   }
 }

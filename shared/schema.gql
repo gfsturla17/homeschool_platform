@@ -15,18 +15,46 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ParentProfileGraphQL {
+  id: Int!
+  address: String
+  city: String
+  state: String
+  biography: String
+  profilePictureUrl: String
+}
+
+type ParentGraphQL {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  userId: Int!
+  profile: ParentProfileGraphQL
+}
+
 type Query {
   """Get teacher availability"""
   getTeacherAvailability(teacherId: Float!): [TeacherAvailabilityGraphQL!]!
+
+  """Get list of all parents"""
+  getParents: [ParentGraphQL!]!
 }
 
 type Mutation {
   createTeacherAvailability(teacherId: Float!, availability: TeacherAvailabilityInput!): TeacherAvailabilityGraphQL!
   updateTeacherAvailability(teacherId: Float!, availabilityId: Float!, availability: TeacherAvailabilityInput!): TeacherAvailabilityGraphQL!
+  signupParent(data: CreateParentInput!): ParentGraphQL!
 }
 
 input TeacherAvailabilityInput {
   startDateTime: DateTime!
   endDateTime: DateTime!
   repeatFrequency: String!
+}
+
+input CreateParentInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
 }

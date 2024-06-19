@@ -1,47 +1,47 @@
-// ParentSignupFormFields
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useSignupParentMutation } from "../../generated/graphql";
+import { CreateParentInput } from '../../generated/graphql';
 import { ErrorMessage, Form, Input, SubmitButton } from "./styles/ParentSignupFormFieldsStyles";
 
-interface ParentSignupFormFieldsProps {
-  onSubmit: (userRegistration: any) => void;
-  error: string;
-}
-
-function ParentSignupFormFields(props: ParentSignupFormFieldsProps) {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+function ParentSignupFormFields() {
+  const [formData, setFormData] = useState<CreateParentInput>({
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+  });
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [birthdate, setBirthdate] = useState('');
+  const [error, setError] = useState('');
+  const [signupParentMutation, { data, loading, error: mutationError }] = useSignupParentMutation();
+  const navigate = useNavigate();
 
-  const handleBirthdateChange = (event: any) => {
-    const inputValue = event.target.value;
-    const formattedValue: any = formatBirthdate(inputValue);
-    setBirthdate(formattedValue);
-  };
-
-  const formatBirthdate = (inputValue: string) => {
-    // format birthdate logic here
-  };
-
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    // Add your submit logic here
+    if (formData.password !== confirmPassword) {
+      return;
+    }
+    try {
+      const result = await signupParentMutation({ variables: { data: formData } });
+      if (result.data) {
+        navigate('/complete-profile');
+      } else {
+        setError('Signup failed. Please try again.');
+      }
+    } catch (error) {
+      setError('Signup failed. Please try again.');
+    }
   };
 
   return (
     <Form onSubmit={handleSubmit}>
       <h2>Parent Sign Up</h2>
-      <Input type="email" value={email} onChange={(event: any) => setEmail(event.target.value)} placeholder="Email Address" />
-      <Input type="text" value={username} onChange={(event: any) => setUsername(event.target.value)} placeholder="Username" />
-      <div>
-        <Input type="password" value={password} onChange={(event: any) => setPassword(event.target.value)} placeholder="Password" />
-      </div>
-      <div>
-        <Input type="password" value={confirmPassword} onChange={(event: any) => setConfirmPassword(event.target.value)} placeholder="Confirm Password" />
-      </div>
-      <Input type="text" value={birthdate} onChange={handleBirthdateChange} placeholder="Birthdate (mm-dd-yyyy)" />
-      {props.error && <ErrorMessage>{props.error}</ErrorMessage>}
+      <Input type="email" value={formData.email} onChange={(event: any) => setFormData({ ...formData, email: event.target.value })} placeholder="Email Address" />
+      <Input type="text" value={formData.firstName} onChange={(event: any) => setFormData({ ...formData, firstName: event.target.value })} placeholder="First Name" />
+      <Input type="text" value={formData.lastName} onChange={(event: any) => setFormData({ ...formData, lastName: event.target.value })} placeholder="Last Name" />
+      <Input type="password" value={formData.password} onChange={(event: any) => setFormData({ ...formData, password: event.target.value })} placeholder="Password" />
+      <Input type="password" value={confirmPassword} onChange={(event: any) => setConfirmPassword(event.target.value)} placeholder="Confirm Password" />
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       <SubmitButton type="submit">Sign up</SubmitButton>
     </Form>
   );
