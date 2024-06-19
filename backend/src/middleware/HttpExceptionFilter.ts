@@ -24,7 +24,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           stack: exception.stack,
         };
         if (exception instanceof BadRequestException) {
-          console.log("Log Bad Request Details: ", exception.getResponse());
+          console.log("Log Bad Request Details:", exception.getResponse());
         }
 
         this.logger.error(requestInfo)
