@@ -8,7 +8,7 @@ import { AutoMap } from "@automapper/classes";
 export class Parent {
   @PrimaryGeneratedColumn()
   @AutoMap()
-  parentId: number;
+  parentId: number
 
   @Column()
   @AutoMap()

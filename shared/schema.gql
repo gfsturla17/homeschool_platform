@@ -36,7 +36,7 @@ type Query {
   """Get teacher availability"""
   getTeacherAvailability(teacherId: Float!): [TeacherAvailabilityGraphQL!]!
 
-  """Get list of all parents """
+  """Get list of all  parents """
   getParents: [ParentGraphQL!]!
 }
 
