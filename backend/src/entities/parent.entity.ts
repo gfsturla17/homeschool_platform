@@ -10,14 +10,6 @@ export class Parent {
   @AutoMap()
   parentId: number
 
-  @Column()
-  @AutoMap()
-  firstName: string;
-
-  @Column()
-  @AutoMap()
-  lastName: string;
-
   @OneToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id', foreignKeyConstraintName: 'fk_parent_user_id_fk' })
   @AutoMap()

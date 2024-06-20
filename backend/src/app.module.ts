@@ -22,6 +22,8 @@ import { ParentsModule } from './parents/parents.module';
 import { classes } from "@automapper/classes";
 import { AutomapperModule } from "@automapper/nestjs";
 import { ParentGraphqlMappingProfile } from "./mappers/parent-graphql-mapping.profile";
+import { DatabaseService } from './database/database.service';
+import { DropDatabaseCommand } from "./commands/clear-db.command";
 
 
 @Module({
@@ -86,6 +88,8 @@ import { ParentGraphqlMappingProfile } from "./mappers/parent-graphql-mapping.pr
   providers: [
     AppService,
     ParentGraphqlMappingProfile,
+    DatabaseService,
+    DropDatabaseCommand,
     // {
     //   provide: APP_GUARD,
     //   useClass: AuthGuard,

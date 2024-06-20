@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type LoginResponseGraphQL {
+  token: String!
+  userId: Float!
+  firstName: String!
+  lastName: String!
+}
+
 type TeacherAvailabilityGraphQL {
   id: Float!
   startDateTime: DateTime!
@@ -41,9 +48,15 @@ type Query {
 }
 
 type Mutation {
+  login(data: LoginRequestGraphQL!): LoginResponseGraphQL!
   createTeacherAvailability(teacherId: Float!, availability: TeacherAvailabilityInput!): TeacherAvailabilityGraphQL!
   updateTeacherAvailability(teacherId: Float!, availabilityId: Float!, availability: TeacherAvailabilityInput!): TeacherAvailabilityGraphQL!
   signupParent(data: CreateParentInput!): ParentGraphQL!
+}
+
+input LoginRequestGraphQL {
+  email: String!
+  password: String!
 }
 
 input TeacherAvailabilityInput {

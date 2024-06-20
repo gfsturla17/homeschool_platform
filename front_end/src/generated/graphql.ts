@@ -26,9 +26,23 @@ export type CreateParentInput = {
   password: Scalars['String']['input'];
 };
 
+export type LoginRequestGraphQl = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type LoginResponseGraphQl = {
+  __typename?: 'LoginResponseGraphQL';
+  firstName: Scalars['String']['output'];
+  lastName: Scalars['String']['output'];
+  token: Scalars['String']['output'];
+  userId: Scalars['Float']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createTeacherAvailability: TeacherAvailabilityGraphQl;
+  login: LoginResponseGraphQl;
   signupParent: ParentGraphQl;
   updateTeacherAvailability: TeacherAvailabilityGraphQl;
 };
@@ -37,6 +51,11 @@ export type Mutation = {
 export type MutationCreateTeacherAvailabilityArgs = {
   availability: TeacherAvailabilityInput;
   teacherId: Scalars['Float']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  data: LoginRequestGraphQl;
 };
 
 
@@ -54,8 +73,8 @@ export type MutationUpdateTeacherAvailabilityArgs = {
 export type ParentGraphQl = {
   __typename?: 'ParentGraphQL';
   firstName: Scalars['String']['output'];
-  id: Scalars['Int']['output'];
   lastName: Scalars['String']['output'];
+  parentId: Scalars['Int']['output'];
   profile?: Maybe<ParentProfileGraphQl>;
   userId: Scalars['Int']['output'];
 };
@@ -65,14 +84,14 @@ export type ParentProfileGraphQl = {
   address?: Maybe<Scalars['String']['output']>;
   biography?: Maybe<Scalars['String']['output']>;
   city?: Maybe<Scalars['String']['output']>;
-  id: Scalars['Int']['output'];
+  parentProfileId: Scalars['Int']['output'];
   profilePictureUrl?: Maybe<Scalars['String']['output']>;
   state?: Maybe<Scalars['String']['output']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  /** Get list of all parents */
+  /** Get list of all  parents  */
   getParents: Array<ParentGraphQl>;
   /** Get teacher availability */
   getTeacherAvailability: Array<TeacherAvailabilityGraphQl>;
@@ -98,12 +117,19 @@ export type TeacherAvailabilityInput = {
   startDateTime: Scalars['DateTime']['input'];
 };
 
+export type LoginMutationVariables = Exact<{
+  data: LoginRequestGraphQl;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseGraphQL', token: string, userId: number, firstName: string, lastName: string } };
+
 export type SignupParentMutationVariables = Exact<{
   data: CreateParentInput;
 }>;
 
 
-export type SignupParentMutation = { __typename?: 'Mutation', signupParent: { __typename?: 'ParentGraphQL', id: number, firstName: string, lastName: string, userId: number, profile?: { __typename?: 'ParentProfileGraphQL', id: number, address?: string | null, biography?: string | null, city?: string | null, profilePictureUrl?: string | null, state?: string | null } | null } };
+export type SignupParentMutation = { __typename?: 'Mutation', signupParent: { __typename: 'ParentGraphQL', parentId: number, firstName: string, lastName: string, userId: number, profile?: { __typename: 'ParentProfileGraphQL', parentProfileId: number, address?: string | null, biography?: string | null, city?: string | null, profilePictureUrl?: string | null, state?: string | null } | null } };
 
 export type GetTeacherAvailabilityQueryVariables = Exact<{
   teacherId: Scalars['Float']['input'];
@@ -130,21 +156,59 @@ export type UpdateTeacherAvailabilityMutationVariables = Exact<{
 export type UpdateTeacherAvailabilityMutation = { __typename?: 'Mutation', updateTeacherAvailability: { __typename?: 'TeacherAvailabilityGraphQL', id: number, startDateTime: any, endDateTime: any, repeatFrequency: string, repeatUntil?: any | null } };
 
 
+export const LoginDocument = gql`
+    mutation Login($data: LoginRequestGraphQL!) {
+  login(data: $data) {
+    token
+    userId
+    firstName
+    lastName
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const SignupParentDocument = gql`
     mutation SignupParent($data: CreateParentInput!) {
   signupParent(data: $data) {
-    id
+    parentId
     firstName
     lastName
     userId
     profile {
-      id
+      parentProfileId
       address
       biography
       city
       profilePictureUrl
       state
+      __typename
     }
+    __typename
   }
 }
     `;

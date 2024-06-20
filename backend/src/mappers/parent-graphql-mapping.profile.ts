@@ -47,6 +47,14 @@ export class ParentGraphqlMappingProfile extends AutomapperProfile {
           mapFrom((Parent) => Parent.user.id)
         ),
         forMember(
+          (ParentGraphQL) => ParentGraphQL.firstName,
+          mapFrom((Parent) => Parent.user.firstName)
+        ),
+        forMember(
+          (ParentGraphQL) => ParentGraphQL.lastName,
+          mapFrom((Parent) => Parent.user.lastName)
+        ),
+        forMember(
           (parentGraphQL) => parentGraphQL.profile,
           mapWith(
             ParentProfileGraphQL,

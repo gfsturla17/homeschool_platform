@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { useSignupParentMutation } from "../../generated/graphql";
+import { LoginRequestGraphQl, useLoginMutation, useSignupParentMutation } from "../../generated/graphql";
 import { CreateParentInput } from '../../generated/graphql';
 import { ErrorMessage, Form, Input, SubmitButton } from "./styles/ParentSignupFormFieldsStyles";
 
@@ -13,8 +13,12 @@ function ParentSignupFormFields() {
   });
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [signupParentMutation, { data, loading, error: mutationError }] = useSignupParentMutation();
+  const [signupParentMutation, { data: signUpResponse, loading: signUpLoading, error: signUpError }] = useSignupParentMutation();
+  const [loginMutation, { data: loginResponse, loading: loginLoading, error: loginError }] = useLoginMutation();
+
+
   const navigate = useNavigate();
+
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -22,9 +26,18 @@ function ParentSignupFormFields() {
       return;
     }
     try {
-      const result = await signupParentMutation({ variables: { data: formData } });
-      if (result.data) {
-        navigate('/complete-profile');
+      const signUpResult = await signupParentMutation({ variables: { data: formData } });
+      if (signUpResponse) {
+        const loginData: LoginRequestGraphQl = {
+          email: formData.email,
+          password: formData.password,
+        };
+        const loginResult = await loginMutation({ variables: { data: loginData } });
+        if (loginResponse) {
+          navigate('/complete-profile');
+        } else {
+          setError('Login failed. Please try again.');
+        }
       } else {
         setError('Signup failed. Please try again.');
       }

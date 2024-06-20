@@ -8,7 +8,17 @@ import { LoginRequestDTO } from "shared-nextdoor-education";
 import { User } from "../entities/user.entity";
 import { Repository } from "typeorm";
 import { UserService } from "../user/user.service";
+import { deprecate } from "node:util";
+import { LoginRequestGraphQL } from "./dto/login-request.graphql";
+import { LoginResponseGraphQL } from "./dto/login-response.graphql";
+import { deprecated } from "core-decorators";
 
+
+
+interface LoginRequest {
+  email: string;
+  password: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -16,7 +26,32 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
   ) {}
+  async loginGraphQL(loginRequestGraphQL: LoginRequestGraphQL): Promise<LoginResponseGraphQL> {
+    const user = await this.userService.findByEmail(loginRequestGraphQL.email);
 
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
+    const isValidPassword = await this.validatePassword(user, loginRequestGraphQL.password);
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
+    const token = await this.generateToken(user);
+    // const loginResponseGraphQL = this.mapper.map(user, User, LoginResponseGraphQL);
+
+
+    const response = new LoginResponseGraphQL();
+    response.token = token;
+    response.userId = user.id;
+    response.firstName = user.firstName;
+    response.lastName = user.lastName;
+
+    return response;
+  }
+
+  @deprecated('Use loginGraphQL instead')
   async login(loginRequestDTO: LoginRequestDTO): Promise<LoginResponseDTO> {
     const user = await this.userService.findByEmail(loginRequestDTO.email);
 

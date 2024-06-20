@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { TeacherModule } from "../teachers/teachers.module";
 import { UserModule } from "../user/user.module";
 import { Reflector } from "@nestjs/core";
+import { AuthResolver } from './auth.resolver';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Reflector } from "@nestjs/core";
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  providers: [AuthService, JwtStrategy, Reflector],
+  providers: [AuthService, JwtStrategy, Reflector, AuthResolver],
   exports: [AuthService],
   controllers: [AuthController],
 })

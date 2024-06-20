@@ -36,6 +36,8 @@ export class ParentService {
       const user = new User();
       user.email = data.email;
       user.password = await bcrypt.hash(data.password, 10);
+      user.firstName = data.firstName;
+      user.lastName = data.lastName;
       const savedUser = await this.userRepository.save(user);
 
       let parentRole = await this.roleRepository.findOne({ where: { name: 'Parent' } });
@@ -56,8 +58,6 @@ export class ParentService {
       await this.userRoleRepository.save(userRole);
 
       const parent = new Parent();
-      parent.firstName = data.firstName;
-      parent.lastName = data.lastName;
       parent.user = savedUser;
       let savedParent = await this.parentRepository.save(parent);
 

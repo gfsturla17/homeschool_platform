@@ -1,0 +1,8 @@
+mutation Login($data: LoginRequestGraphQL!) {
+    login(data: $data) {
+        token
+        userId
+        firstName
+        lastName
+    }
+}

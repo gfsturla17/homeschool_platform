@@ -1,16 +1,18 @@
 mutation SignupParent($data: CreateParentInput!) {
     signupParent(data: $data) {
-        id
+        parentId
         firstName
         lastName
         userId
         profile {
-            id
+            parentProfileId
             address
             biography
             city
             profilePictureUrl
             state
+            __typename
         }
+        __typename
     }
 }

@@ -18,6 +18,14 @@ export class User {
   @AutoMap()
   password: string;
 
+  @Column()
+  @AutoMap()
+  firstName: string;
+
+  @Column()
+  @AutoMap()
+  lastName: string;
+
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   @AutoMap()
   userRoles: UserRole[];

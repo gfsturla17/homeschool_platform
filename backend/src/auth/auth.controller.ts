@@ -13,7 +13,6 @@ export class AuthController {
   @BypassAuth()
   @Post('login')
   async login(@Body() loginRequestDTO: LoginRequestDTO): Promise<LoginResponseDTO> {
-    console.log(loginRequestDTO);
     return this.authService.login(loginRequestDTO);
   }
 
